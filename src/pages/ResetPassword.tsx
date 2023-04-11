@@ -2,22 +2,20 @@ import React, { useState } from "react";
 import styles from "../styles/Auth.module.scss";
 import { Link } from "react-router-dom";
 
-function Signin() {
+function ResetPassword() {
   const [passwordVissible, setPasswordVissible] = useState(false);
+  const [cpasswordVissible, setCPasswordVissible] = useState(false);
   return (
     <section>
       <div className={styles.Container}>
         <div className={styles.Background}></div>
-        <h1 className={styles.Title}>Signin</h1>
+        <h1 className={styles.Title}>Reset Password</h1>
         <form>
           <header className={styles.FormHeader}>
             <i className="fa fa-expeditedssl"></i>
           </header>
 
           <div className={styles.Inputs}>
-            <label htmlFor="name">
-              <input type="text" name="name" placeholder="username or email" />
-            </label>
             <label htmlFor="password">
               <input
                 type={passwordVissible ? "text" : "password"}
@@ -29,17 +27,24 @@ function Signin() {
                 onClick={() => setPasswordVissible(!passwordVissible)}
               ></i>
             </label>
-
-            <p className={styles.Light}>
-              <Link to="/forgot-password">Forgot password?</Link>
-            </p>
+            <label htmlFor="confirm-password">
+              <input
+                type={cpasswordVissible ? "text" : "password"}
+                name="confirm-password"
+                placeholder="Confirm password"
+              />
+              <i
+                className={cpasswordVissible ? "fa fa-eye" : "fa fa-eye-slash"}
+                onClick={() => setCPasswordVissible(!cpasswordVissible)}
+              ></i>
+            </label>
           </div>
         </form>
 
         <footer className={styles.Footer}>
-          <button type="submit">Continue</button>
+          <button>Continue</button>
           <p>
-            Don't have an account? <Link to="/signup">Sign up</Link>
+            Already have an account? <Link to="/">Sign in</Link>
           </p>
         </footer>
       </div>
@@ -47,4 +52,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default ResetPassword;

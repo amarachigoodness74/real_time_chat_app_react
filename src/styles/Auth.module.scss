@@ -1,7 +1,7 @@
 .Container {
   background-color: #fff;
   width: 330px;
-  height: 80vh;
+  height: 570px;
   margin: 2em auto;
   border-radius: 5px;
   padding: 1em;
@@ -12,8 +12,8 @@
 
 .Background {
   width: 400px;
-  height: 75vh;
-  background: #257aa6;
+  height: 550px;
+  background: #425f7a;
   position: absolute;
   top: -5em;
   left: 0;
@@ -25,12 +25,11 @@
 .Title {
   position: absolute;
   text-align: center;
-  padding-top: .5em;
-}
-
-header {
-  width: 220px;
-  margin: 1em auto;
+  padding-top: 0.7em;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: #fff;
 }
 
 form {
@@ -42,13 +41,41 @@ form {
   text-align: center;
   padding: 2em;
 
-  input {
+  .FormHeader {
+    width: 220px;
+    margin: 1.5rem auto;
+    i {
+      width: 100%;
+      font-size: 70px;
+    }
+  }
+
+  .Inputs {
+    margin-top: -0.5em;
+  }
+
+  label {
     width: 100%;
-    padding: 13px 15px;
-    margin: 0.7em auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background: rgb(255, 255, 255, 0.3);
     border-radius: 100px;
     border: none;
-    background: rgb(255, 255, 255, 0.3);
+    padding: 13px 15px;
+    margin: 0.7em auto;
+    i {
+      width: 20px;
+      margin-left: 10px;
+      font-size: 24px;
+    }
+  }
+
+  input {
+    width: 100%;
+    border: none;
+    background: none;
     font-family: "Poppins", sans-serif;
     outline: none;
     color: #fff;
@@ -56,39 +83,36 @@ form {
       color: #fff;
       font-size: 13px;
     }
-}
-
-form 
-  .Inputs {
-    margin-top: -4em;
   }
+
   .Light {
     text-align: right;
     color: #fff;
     a {
       color: #fff;
+      text-decoration: underline;
     }
   }
 }
 
-footer {
+.Footer {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 2em;
   text-align: center;
-}
 
-button {
-  width: 100%;
-  padding: 13px 15px;
-  border-radius: 100px;
-  border: none;
-  background: #257aa6;
-  font-family: "Poppins", sans-serif;
-  outline: none;
-  color: #fff;
+  button {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 100px;
+    border: none;
+    background: #425f7a;
+    font-family: "Poppins", sans-serif;
+    outline: none;
+    color: #fff;
+  }
 }
 
 @media screen and (max-width: 640px) {
@@ -98,16 +122,16 @@ button {
     border-radius: 0;
   }
 
-  .bg {
+  .Background {
     top: -7em;
     width: 450px;
     height: 95vh;
   }
-  header {
+  .FormHeader {
     width: 90%;
     height: 250px;
   }
-  .inputs {
+  .Inputs {
     margin: 0;
   }
   input,
