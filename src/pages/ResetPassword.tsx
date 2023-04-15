@@ -1,45 +1,49 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "../styles/Auth.module.scss";
 import { Link } from "react-router-dom";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { PasswordInput } from "../components/FormElements";
+
+const validation = Yup.object({
+  password: Yup.string()
+    .max(20, "Must be 20 characters or less")
+    .required("Required"),
+});
 
 function ResetPassword() {
-  const [passwordVissible, setPasswordVissible] = useState(false);
-  const [cpasswordVissible, setCPasswordVissible] = useState(false);
   return (
     <section>
       <div className={styles.Container}>
         <div className={styles.Background}></div>
         <h1 className={styles.Title}>Reset Password</h1>
-        <form>
-          <header className={styles.FormHeader}>
-            <i className="fa fa-expeditedssl"></i>
-          </header>
 
-          <div className={styles.Inputs}>
-            <label htmlFor="password">
-              <input
-                type={passwordVissible ? "text" : "password"}
-                name="password"
-                placeholder="password"
-              />
-              <i
-                className={passwordVissible ? "fa fa-eye" : "fa fa-eye-slash"}
-                onClick={() => setPasswordVissible(!passwordVissible)}
-              ></i>
-            </label>
-            <label htmlFor="confirm-password">
-              <input
-                type={cpasswordVissible ? "text" : "password"}
-                name="confirm-password"
-                placeholder="Confirm password"
-              />
-              <i
-                className={cpasswordVissible ? "fa fa-eye" : "fa fa-eye-slash"}
-                onClick={() => setCPasswordVissible(!cpasswordVissible)}
-              ></i>
-            </label>
-          </div>
-        </form>
+        <Formik
+          initialValues={{ name: "", email: "", password: "" }}
+          validationSchema={validation}
+          onSubmit={(values, { setSubmitting }) => {
+            setTimeout(() => {
+              alert(JSON.stringify(values, null, 2));
+              setSubmitting(false);
+            }, 400);
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <header className={styles.FormHeader}>
+                <i className="fa fa-expeditedssl"></i>
+              </header>
+
+              <div className={styles.Inputs}>
+                <PasswordInput name="password" placeholder="password" />
+                <PasswordInput
+                  name="cpassword"
+                  placeholder="confirm password"
+                />
+              </div>
+            </Form>
+          )}
+        </Formik>
 
         <footer className={styles.Footer}>
           <button>Continue</button>

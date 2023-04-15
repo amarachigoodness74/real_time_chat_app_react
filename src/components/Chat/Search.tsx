@@ -1,8 +1,9 @@
 import React from "react";
+import styles from "../../styles/Chat.module.scss";
 
 function Search() {
   return (
-    <div id="search">
+    <div className={styles.Search}>
       <label htmlFor="">
         <i className="fa fa-search" aria-hidden="true"></i>
       </label>
