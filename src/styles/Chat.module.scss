@@ -15,6 +15,10 @@
   min-height: 300px;
   max-height: 720px;
   background: #e6eaea;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   @media screen and (max-width: 360px) {
     width: 100%;
     height: 100vh;
@@ -22,7 +26,7 @@
 }
 
 .SidePanel {
-  float: left;
+  // float: left;
   width: 40%;
   min-width: 280px;
   max-width: 340px;
@@ -40,6 +44,11 @@
 .Profile {
   width: 80%;
   margin: 15px auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
   @media screen and (max-width: $break) {
     width: 100%;
     margin: 0 auto;
@@ -267,10 +276,13 @@
   }
 
   label {
-    width: 25px;
-    margin-right: 10px;
-    padding: 7px 10px;
+    margin: 0 10px;
     cursor: pointer;
+
+    i {
+      border-right: 1px dotted rgb(193, 194, 195);
+      padding: 10px;
+    }
   }
 
   input {
@@ -297,6 +309,17 @@
     }
     &:-moz-placeholder {
       color: $white;
+    }
+  }
+
+  .RefreshBtn {
+    width: 25px;
+    margin: 0 10px;
+    cursor: pointer;
+
+    i {
+      border-left: 1px dotted rgb(193, 194, 195);
+      padding: 10px;
     }
   }
 }
@@ -330,7 +353,6 @@
 
   ul {
     li.Contact {
-      // position: relative;
       padding: 10px 0 15px 0;
       font-size: 0.9em;
       cursor: pointer;
@@ -352,7 +374,7 @@
       }
 
       .Wrap {
-        width: 88%;
+        width: 85%;
         margin: 0 auto;
         position: relative;
         display: flex;
@@ -466,7 +488,7 @@
 }
 
 .ChatContent {
-  float: right;
+  // float: right;
   width: 60%;
   height: 100%;
   overflow: hidden;
@@ -476,45 +498,44 @@
     min-width: 300px !important;
   }
   @media screen and (min-width: $break-big) {
-    width: calc(100% - 340px);
+    // width: calc(100% - 340px);
   }
 
-  .contact-profile {
+  .ContactProfile {
     width: 100%;
     height: 60px;
     line-height: 60px;
     background: $white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 
-    img {
-      width: 40px;
-      border-radius: 50%;
-      float: left;
-      margin: 9px 12px 0 9px;
+    .FriendProfile {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      img {
+        width: 40px;
+        border-radius: 50%;
+        float: left;
+        margin: 9px 12px 0 9px;
+      }
+
+      p {
+        color: #333;
+      }
     }
 
-    p {
-      float: left;
-    }
-
-    .social-media {
-      float: right;
-
-      i {
-        margin-left: 14px;
+    .ChatOptions {
+      span {
+        margin: 0 10px;
         cursor: pointer;
-
-        &:nth-last-child(1) {
-          margin-right: 20px;
-        }
-
-        &:hover {
-          color: $light;
-        }
       }
     }
   }
 
-  .messages {
+  .Messages {
     height: auto;
     min-height: calc(100% - 93px);
     max-height: calc(100% - 93px);
@@ -546,7 +567,7 @@
           margin-bottom: 20px;
         }
 
-        &.sent {
+        &.Sent {
           img {
             margin: 6px 8px 0 0;
           }
@@ -557,7 +578,7 @@
           }
         }
 
-        &.replies {
+        &.Replies {
           img {
             float: right;
             margin: 6px 0 0 8px;
@@ -589,13 +610,13 @@
     }
   }
 
-  .message-input {
+  .MessageInput {
     position: absolute;
-    bottom: 0;
+    bottom: -3px;
     width: 100%;
     z-index: 99;
 
-    .wrap {
+    .Wrap {
       position: relative;
 
       input {
@@ -615,7 +636,7 @@
         }
       }
 
-      .attachment {
+      .Attachment {
         position: absolute;
         right: 60px;
         z-index: 4;

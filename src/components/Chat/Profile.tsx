@@ -54,6 +54,7 @@ function Profile() {
           </ul>
         </div>
       </div>
+      <span className={styles.StatusBtn}><i className="fa fa-sign-in"></i></span>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, KeyboardEvent } from "react";
 import Profile from "../components/Chat/Profile";
 import Search from "../components/Chat/Search";
 import FriendsList from "../components/Chat/FriendsList";
@@ -44,16 +44,44 @@ const users: IUser[] = [
     profilePics: "http://emilcarlsson.se/assets/danielhardman.png",
     lastChat: " We'll meet again, Mike. Tell Jessica I said 'Hi'.",
   },
+  {
+    name: "Jessica Pearson",
+    profilePics: "http://emilcarlsson.se/assets/jessicapearson.png",
+    lastChat: "Have you finished the draft on the Hinsenburg deal?",
+  },
+  {
+    name: "Harold Gunderson",
+    profilePics: "http://emilcarlsson.se/assets/haroldgunderson.png",
+    lastChat: "Thanks Mike! :)",
+  },
+  {
+    name: "Daniel Hardman",
+    profilePics: "http://emilcarlsson.se/assets/danielhardman.png",
+    lastChat: " We'll meet again, Mike. Tell Jessica I said 'Hi'.",
+  },
 ];
 
 function Chat() {
+  const [searchField, setSearchField] = useState("");
+  const [filteredUsers, setFilteredUser] = useState(users);
+
+  const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => setSearchField((e.target as HTMLInputElement).value.toLowerCase());
+
+  useEffect(() => {
+    if (searchField === "" || searchField === " ") {
+      setFilteredUser(users);
+    } else {
+      setFilteredUser(users.filter((user) => user.name.toLowerCase().includes(searchField)));
+    }
+  }, [searchField]);
+
   return (
     <section>
       <div className={styles.Container}>
         <div className={styles.SidePanel}>
           <Profile />
-          <Search />
-          <FriendsList users={users} />
+          <Search handleSearch={handleSearch} />
+          <FriendsList users={filteredUsers} />
           <p className={styles.Spacer}></p>
           <AddFriend />
         </div>

@@ -1,6 +1,5 @@
+import React, { useState } from "react";
 import { useField } from "formik";
-import { useState } from "react";
-import * as Yup from "yup";
 
 export const TextInput = ({ ...props }: any) => {
   // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
@@ -20,8 +19,6 @@ export const TextInput = ({ ...props }: any) => {
 
 export const PasswordInput = ({ ...props }: any) => {
   const [passwordVissible, setPasswordVissible] = useState(false);
-  // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
-  // which we can spread on <input> and alse replace ErrorMessage entirely.
   const [field, meta] = useField(props);
   return (
     <div>
