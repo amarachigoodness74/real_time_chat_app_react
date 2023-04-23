@@ -32,7 +32,7 @@
   color: #fff;
 }
 
-form {
+.Form {
   position: absolute;
   top: 0;
   left: 0;
@@ -112,6 +112,7 @@ form {
     font-family: "Poppins", sans-serif;
     outline: none;
     color: #fff;
+    cursor: pointer;
   }
 }
 

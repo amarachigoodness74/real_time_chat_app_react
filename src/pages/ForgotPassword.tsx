@@ -6,10 +6,6 @@ import * as Yup from "yup";
 import { TextInput } from "../components/FormElements";
 
 const validation = Yup.object({
-  name: Yup.string()
-    .min(3, "Must be 3 characters or more")
-    .max(20, "Must be 20 characters or less")
-    .required("Required"),
   email: Yup.string().email("Invalid email address").required("Required"),
 });
 
@@ -31,27 +27,30 @@ function ForgotPassword() {
         >
           {({ isSubmitting }) => (
             <Form>
-              <header className={styles.FormHeader}>
-                <i className="fa fa-expeditedssl"></i>
-              </header>
+              <div className={styles.Form}>
+                <header className={styles.FormHeader}>
+                  <i className="fa fa-expeditedssl"></i>
+                </header>
 
-              <div className={styles.Inputs}>
-                <TextInput name="name" placeholder="username or email" />
-                {/* <TextInput name="email" placeholder="email" /> */}
-                <p className={styles.Light}>
-                  Don't have an account? <Link to="/signup">Signup</Link>
-                </p>
+                <div className={styles.Inputs}>
+                  <TextInput name="email" placeholder="email" />
+                  <p className={styles.Light}>
+                    Don't have an account? <Link to="/signup">Signup</Link>
+                  </p>
+                </div>
               </div>
+
+              <footer className={styles.Footer}>
+                <button type="submit" disabled={isSubmitting}>
+                  Continue
+                </button>
+                <p>
+                  Already have an account? <Link to="/">Sign in</Link>
+                </p>
+              </footer>
             </Form>
           )}
         </Formik>
-
-        <footer className={styles.Footer}>
-          <button>Continue</button>
-          <p>
-            Already have an account? <Link to="/">Sign in</Link>
-          </p>
-        </footer>
       </div>
     </section>
   );

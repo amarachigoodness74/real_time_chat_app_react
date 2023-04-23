@@ -30,27 +30,31 @@ function ResetPassword() {
         >
           {({ isSubmitting }) => (
             <Form>
-              <header className={styles.FormHeader}>
-                <i className="fa fa-expeditedssl"></i>
-              </header>
+              <div className={styles.Form}>
+                <header className={styles.FormHeader}>
+                  <i className="fa fa-expeditedssl"></i>
+                </header>
 
-              <div className={styles.Inputs}>
-                <PasswordInput name="password" placeholder="password" />
-                <PasswordInput
-                  name="cpassword"
-                  placeholder="confirm password"
-                />
+                <div className={styles.Inputs}>
+                  <PasswordInput name="password" placeholder="password" />
+                  <PasswordInput
+                    name="cpassword"
+                    placeholder="confirm password"
+                  />
+                </div>
               </div>
+
+              <footer className={styles.Footer}>
+                <button type="submit" disabled={isSubmitting}>
+                  Continue
+                </button>
+                <p>
+                  Already have an account? <Link to="/">Sign in</Link>
+                </p>
+              </footer>
             </Form>
           )}
         </Formik>
-
-        <footer className={styles.Footer}>
-          <button>Continue</button>
-          <p>
-            Already have an account? <Link to="/">Sign in</Link>
-          </p>
-        </footer>
       </div>
     </section>
   );
