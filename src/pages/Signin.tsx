@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../utils/firebase";
 import styles from "../styles/Auth.module.scss";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { PasswordInput, TextInput } from "../components/FormElements";
-import { IUserData } from "../types/users";
+import { IUserData } from "../@types/@types.users.ts";
 
 const validation = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -18,6 +18,14 @@ const validation = Yup.object({
 function Signin() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [redirect, setRedirect] = useState(false);
+
+  useEffect(() => {
+    redirect &&
+      setTimeout(() => {
+        navigate("/signup");
+      }, 5000);
+  }, [navigate, redirect]);
 
   const handleSignin = async ({ email, password }: IUserData) => {
     try {
@@ -27,11 +35,19 @@ function Signin() {
         password
       );
       const user = userCredential.user;
-      if(user) {
+      if (user) {
         navigate("/chat");
+      } else {
+        setRedirect(true);
       }
     } catch (error: any) {
-      setError(error.message);
+      const errorMessage = error.message || error[0].message;
+      if (errorMessage.includes("user-not-found")) {
+        setError("User not found, please create an account");
+        setRedirect(true);
+      } else {
+        setError(error.message || error[0].message);
+      }
     }
   };
 
@@ -65,14 +81,13 @@ function Signin() {
               </div>
 
               <footer className={styles.Footer}>
+                {error && <p className={styles.Error}>{error}</p>}
                 <button type="submit" disabled={isSubmitting}>
                   Continue
                 </button>
                 <p>
                   Don't have an account? <Link to="/signup">Sign up</Link>
                 </p>
-
-                {error && <p>error</p>}
               </footer>
             </Form>
           )}

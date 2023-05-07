@@ -1,5 +1,5 @@
 import React from "react";
-import { IUser } from "../../types/users";
+import { IUser } from "../../@types/@types.users.ts";
 import styles from "../../styles/Chat.module.scss";
 
 type FriendsListProps = {

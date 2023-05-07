@@ -6,7 +6,6 @@ import reloadOnFail from "./utils/reloadOnFail";
 
 import "./styles/main.scss";
 
-
 const SignupPage = lazy(() => reloadOnFail(() => import("./pages/Signup")));
 const SigninPage = lazy(() => reloadOnFail(() => import("./pages/Signin")));
 const ForgotPasswordPage = lazy(() =>

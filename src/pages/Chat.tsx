@@ -1,8 +1,8 @@
-import React, { useEffect, useState, KeyboardEvent } from "react";
+import React, { useState, KeyboardEvent } from "react";
 import Profile from "../components/Chat/Profile";
 import Search from "../components/Chat/Search";
 import FriendsList from "../components/Chat/FriendsList";
-import { IUser } from "../types/users";
+import { IUser } from "../@types/@types.users.ts";
 import AddFriend from "../components/Chat/AddFriend";
 import ChatContent from "../components/Chat/ChatContent";
 import styles from "../styles/Chat.module.scss";
@@ -63,17 +63,13 @@ const users: IUser[] = [
 
 function Chat() {
   const [searchField, setSearchField] = useState("");
-  const [filteredUsers, setFilteredUser] = useState(users);
 
-  const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => setSearchField((e.target as HTMLInputElement).value.toLowerCase());
-
-  useEffect(() => {
-    if (searchField === "" || searchField === " ") {
-      setFilteredUser(users);
-    } else {
-      setFilteredUser(users.filter((user) => user.name.toLowerCase().includes(searchField)));
-    }
-  }, [searchField]);
+  const handleSearch = (e: KeyboardEvent<HTMLInputElement>) =>
+    setSearchField(() => (e.target as HTMLInputElement).value.toLowerCase());
+  const filteredUsers =
+    searchField === ""
+      ? users
+      : users.filter((user) => user.name.toLowerCase().includes(searchField));
 
   return (
     <section>

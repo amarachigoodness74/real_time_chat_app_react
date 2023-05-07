@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../firebase";
+import { doc, setDoc } from "firebase/firestore"; 
+import { auth, db } from "../utils/firebase";
 import styles from "../styles/Auth.module.scss";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { PasswordInput, TextInput } from "../components/FormElements";
-import { IUserData } from "../types/users";
+import { IUserData } from "../@types/@types.users.ts";
 
 const validation = Yup.object({
   username: Yup.string()
@@ -31,6 +32,12 @@ function Signup() {
       );
       const user = userCredential.user;
       await updateProfile(user, { displayName: username });
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        username,
+        email,
+        photoURL: ""
+      })
       navigate("/chat");
     } catch (error: any) {
       setError(error.message);
@@ -65,14 +72,13 @@ function Signup() {
               </div>
 
               <footer className={styles.Footer}>
+                {error && <p className={styles.Error}>{error}</p>}
                 <button type="submit" disabled={isSubmitting}>
                   Continue
                 </button>
                 <p>
                   Already have an account? <Link to="/">Sign in</Link>
                 </p>
-
-                {error && <p>error</p>}
               </footer>
             </Form>
           )}
