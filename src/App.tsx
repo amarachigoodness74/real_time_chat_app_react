@@ -1,9 +1,9 @@
 import React, { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
-
+import { Routes, Route, Navigate } from "react-router-dom";
 import PageLoader from "./components/loaders/PageLoader";
 import reloadOnFail from "./utils/reloadOnFail";
-
+import useCurrentUser from "./hooks/useCurrentUser";
+import { AuxProps } from "./@types/@types.children";
 import "./styles/main.scss";
 
 const SignupPage = lazy(() => reloadOnFail(() => import("./pages/Signup")));
@@ -17,6 +17,14 @@ const ResetPasswordPage = lazy(() =>
 const ChatPage = lazy(() => reloadOnFail(() => import("./pages/Chat")));
 
 function App() {
+  const currentUser = useCurrentUser();
+  const ProtectedRoute = ({ children }: AuxProps) => {
+    if (!currentUser) {
+      return <Navigate to="/" />;
+    }
+    return <>{children}</>;
+  };
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
@@ -24,7 +32,14 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/chat" element={<ChatPage />} />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Suspense>
   );

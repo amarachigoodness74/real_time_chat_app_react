@@ -1,14 +1,14 @@
-import { User, onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect, createContext } from "react";
+import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { AuthContextType } from "../@types/@types.users.ts";
-import { AuxProps } from "../@types/children";
+import { AuthContextType } from "../@types/@types.users";
+import { AuxProps } from "../@types/@types.children";
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthContextProvider = ({
   children,
-}: React.PropsWithChildren<AuxProps>) => {
+}: AuxProps) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {

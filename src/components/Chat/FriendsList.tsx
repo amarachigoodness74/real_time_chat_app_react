@@ -1,5 +1,5 @@
 import React from "react";
-import { IUser } from "../../@types/@types.users.ts";
+import { IUser } from "../../@types/@types.users";
 import styles from "../../styles/Chat.module.scss";
 
 type FriendsListProps = {
@@ -11,7 +11,7 @@ export default function FriendsList({ users }: FriendsListProps) {
     <div className={styles.Contacts}>
       <ul>
         {users.map((user) => (
-          <li className={styles.Contact}>
+          <li className={styles.Contact} key={user.id}>
             <div className={styles.Wrap}>
               {/* <span className="contact-status online"></span> */}
               <span className={styles.ContactStatus}></span>

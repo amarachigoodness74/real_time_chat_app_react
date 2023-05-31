@@ -1,13 +1,14 @@
 import React, { useState } from "react";
+import * as Yup from "yup";
+import { Formik, Form } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; 
-import { auth, db } from "../utils/firebase";
-import styles from "../styles/Auth.module.scss";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import { getDownloadURL, uploadBytesResumable, ref } from "firebase/storage";
+import { auth, storage, db } from "../utils/firebase";
 import { PasswordInput, TextInput } from "../components/FormElements";
-import { IUserData } from "../@types/@types.users.ts";
+import { IUserData } from "../@types/@types.users";
+import styles from "../styles/Auth.module.scss";
+import { doc, setDoc } from "firebase/firestore";
 
 const validation = Yup.object({
   username: Yup.string()
@@ -15,6 +16,7 @@ const validation = Yup.object({
     .max(20, "Must be 20 characters or less")
     .required("Required"),
   email: Yup.string().email("Invalid email address").required("Required"),
+  displayImg: Yup.mixed().required(),
   password: Yup.string()
     .max(20, "Must be 20 characters or less")
     .required("Required"),
@@ -22,8 +24,14 @@ const validation = Yup.object({
 
 function Signup() {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const handleSignup = async ({ username, email, password }: IUserData) => {
+  const [error, setError] = useState<null | string>(null);
+  const [photoUrl, setPhotoUrl] = useState<null | string>(null);
+  const handleSignup = async ({
+    username,
+    email,
+    password,
+    displayImg,
+  }: IUserData) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -31,14 +39,29 @@ function Signup() {
         password
       );
       const user = userCredential.user;
-      await updateProfile(user, { displayName: username });
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        username,
-        email,
-        photoURL: ""
-      })
-      navigate("/chat");
+      const profilePicsRef = ref(storage, username);
+      const profilePics = uploadBytesResumable(profilePicsRef, displayImg);
+      profilePics.on(
+        "state_changed",
+        (error: any) => {
+          throw error(error.message);
+        },
+        () => {
+          getDownloadURL(profilePics.snapshot.ref).then(async (downloadURL) => {
+            await updateProfile(user, {
+              displayName: username,
+              photoURL: downloadURL,
+            });
+            await setDoc(doc(db, "users", user.uid), {
+              uid: user.uid,
+              displayName: username,
+              email,
+              photoURL: downloadURL,
+            });
+            navigate("/chat");
+          });
+        }
+      );
     } catch (error: any) {
       setError(error.message);
     }
@@ -50,14 +73,21 @@ function Signup() {
         <div className={styles.Background}></div>
         <h1 className={styles.Title}>Signup</h1>
         <Formik
-          initialValues={{ username: "", email: "", password: "" }}
+          initialValues={{
+            username: "",
+            email: "",
+            password: "",
+            displayImg: "",
+          }}
           validationSchema={validation}
           onSubmit={(values, { setSubmitting }) => {
-            handleSignup(values);
+            if (!error) {
+              handleSignup(values);
+            }
             setSubmitting(false);
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, setFieldValue }) => (
             <Form>
               <div className={styles.Form}>
                 <header className={styles.FormHeader}>
@@ -68,6 +98,42 @@ function Signup() {
                   <TextInput name="username" placeholder="username" />
                   <TextInput name="email" placeholder="email" />
                   <PasswordInput name="password" placeholder="password" />
+                  <label className={styles.PhotoLabel} htmlFor="displayImg">
+                    {photoUrl ? (
+                      <>
+                        <img
+                          src={photoUrl}
+                          alt="Profile Avatar"
+                          style={{
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                          }}
+                        />
+                        <span>Change avatar</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa fa-cloud-upload"></i>
+                        <span>Add an avatar</span>
+                      </>
+                    )}
+                    <input
+                      id="displayImg"
+                      name="displayImg"
+                      accept="image/*"
+                      type="file"
+                      hidden
+                      onChange={(e: any) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setPhotoUrl(URL.createObjectURL(e.target.files[0]));
+                          setFieldValue("displayImg", e.currentTarget.files[0]);
+                        } else {
+                          setError("Please upload a valid image");
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
               </div>
 

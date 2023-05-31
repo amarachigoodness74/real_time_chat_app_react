@@ -85,6 +85,28 @@
     }
   }
 
+  .PhotoLabel {
+    width: auto;
+    border: none;
+    background: none;
+    justify-content: flex-start;
+    color: #fff;
+    
+    i {
+      color: #fff;
+      font-size: 50px;
+      margin-right: 30px;
+    }
+    input {
+      width: auto;
+    }
+    span {
+      font-size: .7rem;
+      margin-left: 10px;
+    }
+  }
+  
+
   .Light {
     text-align: right;
     color: #fff;

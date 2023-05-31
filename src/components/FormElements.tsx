@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { useField } from "formik";
 
 export const TextInput = ({ ...props }: any) => {
-  // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
-  // which we can spread on <input> and alse replace ErrorMessage entirely.
   const [field, meta] = useField(props);
   return (
     <div>
       <label htmlFor={props.id || props.name}>
-        <input type="text" {...field} {...props} />
+        <input id={props.id || props.name} type="text" {...field} {...props} />
       </label>
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
@@ -24,6 +22,7 @@ export const PasswordInput = ({ ...props }: any) => {
     <div>
       <label htmlFor={props.id || props.name}>
         <input
+          id={props.id || props.name}
           type={passwordVissible ? "text" : "password"}
           {...field}
           {...props}

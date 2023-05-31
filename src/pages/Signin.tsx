@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import * as Yup from "yup";
+import { Formik, Form } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import styles from "../styles/Auth.module.scss";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { PasswordInput, TextInput } from "../components/FormElements";
-import { IUserData } from "../@types/@types.users.ts";
+import { IUserData } from "../@types/@types.users";
+import styles from "../styles/Auth.module.scss";
 
 const validation = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -18,14 +18,6 @@ const validation = Yup.object({
 function Signin() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [redirect, setRedirect] = useState(false);
-
-  useEffect(() => {
-    redirect &&
-      setTimeout(() => {
-        navigate("/signup");
-      }, 5000);
-  }, [navigate, redirect]);
 
   const handleSignin = async ({ email, password }: IUserData) => {
     try {
@@ -38,13 +30,12 @@ function Signin() {
       if (user) {
         navigate("/chat");
       } else {
-        setRedirect(true);
+        setError("Something went wrong, try again!");
       }
     } catch (error: any) {
       const errorMessage = error.message || error[0].message;
       if (errorMessage.includes("user-not-found")) {
         setError("User not found, please create an account");
-        setRedirect(true);
       } else {
         setError(error.message || error[0].message);
       }

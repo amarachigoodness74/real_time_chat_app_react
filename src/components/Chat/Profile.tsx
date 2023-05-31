@@ -1,7 +1,11 @@
 import React from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "../../utils/firebase";
+import useCurrentUser from "../../hooks/useCurrentUser";
 import styles from "../../styles/Chat.module.scss";
 
 function Profile() {
+  const currentUser = useCurrentUser();
   const handleStatusDropdown = () => {
     let statusOptions: HTMLElement | null =
       document.getElementById("status-options");
@@ -54,7 +58,11 @@ function Profile() {
           </ul>
         </div>
       </div>
-      <span className={styles.StatusBtn}><i className="fa fa-sign-in"></i></span>
+      {currentUser && (
+        <span className={styles.StatusBtn}>
+          <i className="fa fa-sign-out" onClick={() => signOut(auth)}></i>
+        </span>
+      )}
     </div>
   );
 }
