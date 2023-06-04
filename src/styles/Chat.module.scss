@@ -26,8 +26,7 @@
 }
 
 .SidePanel {
-  // float: left;
-  width: 40%;
+  width: 30%;
   min-width: 280px;
   max-width: 340px;
   height: 100%;
@@ -61,26 +60,47 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     overflow: hidden;
     @include transition(0.3s height ease);
     @media screen and (max-width: $break) {
       height: 55px;
     }
 
-    img {
-      width: 50px;
-      border-radius: 50%;
-      padding: 3px;
-      height: auto;
-      float: left;
-      cursor: pointer;
-      position: relative;
-      @include transition(0.3s border ease);
-      @media screen and (max-width: $break) {
-        width: 40px;
-        margin-left: 4px;
+    .StatusWrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        margin-right: 7px;
+      }
+
+      i {
+        cursor: pointer;
+        font-size: 18px;
       }
     }
+
+    // img {
+    //   width: 50px;
+    //   border-radius: 50%;
+    //   padding: 3px;
+    //   height: auto;
+    //   float: left;
+    //   cursor: pointer;
+    //   position: relative;
+    //   @include transition(0.3s border ease);
+    //   @media screen and (max-width: $break) {
+    //     width: 40px;
+    //     margin-left: 4px;
+    //   }
+
+    //   .fa-caret-down {
+    //     color: #fff;
+    //   }
+    // }
 
     p {
       float: left;
@@ -258,6 +278,16 @@
         }
       }
     }
+  }
+
+  .StatusBtn {
+    background-color: #f73f3f;
+    color: #fff;
+    font-size: 1rem;
+    padding: 1px 5px;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
   }
 }
 
@@ -488,8 +518,7 @@
 }
 
 .ChatContent {
-  // float: right;
-  width: 60%;
+  width: 70%;
   height: 100%;
   overflow: hidden;
   position: relative;

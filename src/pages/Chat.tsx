@@ -71,7 +71,7 @@ const users: IUser[] = [
   },
 ];
 
-function Chat() {
+export default function Chat() {
   const [searchField, setSearchField] = useState("");
 
   const handleSearch = (e: KeyboardEvent<HTMLInputElement>) =>
@@ -98,5 +98,3 @@ function Chat() {
     </section>
   );
 }
-
-export default Chat;

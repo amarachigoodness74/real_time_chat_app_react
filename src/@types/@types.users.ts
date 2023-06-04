@@ -18,3 +18,10 @@ export interface IUser {
 export type AuthContextType = {
   currentUser: User | null;
 };
+
+export enum UserStatus {
+  online = 'Online',
+  away = 'Away',
+  busy = 'Busy',
+  offline = 'Offline',
+}

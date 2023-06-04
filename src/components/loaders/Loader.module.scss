@@ -1,63 +1,58 @@
 // PageLoader Styles
 .PageLoaderCircle {
-  display: inline-block;
-  transform: translateZ(1px);
-}
-.PageLoaderCircle > div {
-  display: inline-block;
   width: 100px;
   height: 100px;
-  margin: 8px;
-  border-radius: 50%;
-  background: #FF3D00;
-  animation: page-loader-circle 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-}
-@keyframes page-loader-circle {
-  0%, 100% {
-    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
-  }
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(1800deg);
-    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
-  }
-  100% {
-    transform: rotateY(3600deg);
-  }
-}
-
-// LoadingIndicator Styles
-.Loader {
-  width: 90px;
-  height: 90px;
-  border: 3px solid #FFF;
+  border: 5px solid #425f7a;
   border-radius: 50%;
   display: inline-block;
+  box-sizing: border-box;
   position: relative;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
+  animation: pulse 1s linear infinite;
 }
-.Loader::after {
-  content: '';  
-  box-sizing: border-box;
+.PageLoaderCircle:after {
+  content: '';
   position: absolute;
+  width: 90px;
+  height: 90px;
+  border: 5px solid #FFF;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 3px solid;
-  border-color: #FF3D00 transparent;
+  animation: scaleUp 1s linear infinite;
 }
 
-@keyframes rotation {
+@keyframes scaleUp {
+  0% { transform: translate(-50%, -50%) scale(0) }
+  60% , 100% { transform: translate(-50%, -50%)  scale(1)}
+}
+@keyframes pulse {
+  0% , 60% , 100%{ transform:  scale(1) }
+  80% { transform:  scale(1.2)}
+}
+
+// InlineLoader Styles
+.InlineLoader {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  background: #FFF;
+  box-sizing: border-box;
+  animation: shadowExpandX 2s linear infinite alternate;
+}
+
+@keyframes shadowExpandX {
   0% {
-    transform: rotate(0deg);
+    box-shadow: 0 0, 0 0;
+    color: rgba(255, 255, 255, 0.2);
   }
   100% {
-    transform: rotate(360deg);
+    box-shadow: -24px 0, 24px 0;
+    color: rgba(255, 255, 255, 0.8);
   }
-} 
+}

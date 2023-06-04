@@ -3,12 +3,13 @@ import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { getDownloadURL, uploadBytesResumable, ref } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, storage, db } from "../utils/firebase";
 import { PasswordInput, TextInput } from "../components/FormElements";
-import { IUserData } from "../@types/@types.users";
+import InlineLoader from "../components/loaders/InlineLoader";
+import { IUserData, UserStatus } from "../@types/@types.users";
 import styles from "../styles/Auth.module.scss";
-import { doc, setDoc } from "firebase/firestore";
 
 const validation = Yup.object({
   username: Yup.string()
@@ -26,12 +27,16 @@ function Signup() {
   const navigate = useNavigate();
   const [error, setError] = useState<null | string>(null);
   const [photoUrl, setPhotoUrl] = useState<null | string>(null);
+  const [photoUploadState, setUploadState] = useState<null | string>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const handleSignup = async ({
     username,
     email,
     password,
     displayImg,
   }: IUserData) => {
+    setIsSubmitting(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -39,15 +44,22 @@ function Signup() {
         password
       );
       const user = userCredential.user;
-      const profilePicsRef = ref(storage, username);
-      const profilePics = uploadBytesResumable(profilePicsRef, displayImg);
-      profilePics.on(
+      const storageRef = ref(storage, username || displayImg.name);
+      const uploadTask = uploadBytesResumable(storageRef, displayImg);
+      uploadTask.on(
         "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadState("Upload is " + progress + "% done");
+        },
         (error: any) => {
-          throw error(error.message);
+          console.error("error", error);
+          setIsSubmitting(false);
         },
         () => {
-          getDownloadURL(profilePics.snapshot.ref).then(async (downloadURL) => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            console.log("downloadURL", downloadURL);
             await updateProfile(user, {
               displayName: username,
               photoURL: downloadURL,
@@ -57,12 +69,17 @@ function Signup() {
               displayName: username,
               email,
               photoURL: downloadURL,
+              status: UserStatus.online,
             });
+            await setDoc(doc(db, "usersFriends", user.uid), {});
+            await setDoc(doc(db, "usersChats", user.uid), {});
+            await setDoc(doc(db, "usersAttachments", user.uid), {});
             navigate("/chat");
           });
         }
       );
     } catch (error: any) {
+      setIsSubmitting(false);
       setError(error.message);
     }
   };
@@ -87,7 +104,7 @@ function Signup() {
             setSubmitting(false);
           }}
         >
-          {({ isSubmitting, setFieldValue }) => (
+          {({ setFieldValue }) => (
             <Form>
               <div className={styles.Form}>
                 <header className={styles.FormHeader}>
@@ -139,8 +156,12 @@ function Signup() {
 
               <footer className={styles.Footer}>
                 {error && <p className={styles.Error}>{error}</p>}
+                {photoUploadState && (
+                  <p className={styles.Status}>{photoUploadState}</p>
+                )}
+
                 <button type="submit" disabled={isSubmitting}>
-                  Continue
+                  {isSubmitting ? <InlineLoader /> : "Continue"}
                 </button>
                 <p>
                   Already have an account? <Link to="/">Sign in</Link>

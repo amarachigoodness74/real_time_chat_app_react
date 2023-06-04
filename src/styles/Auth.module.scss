@@ -91,7 +91,7 @@
     background: none;
     justify-content: flex-start;
     color: #fff;
-    
+
     i {
       color: #fff;
       font-size: 50px;
@@ -101,11 +101,10 @@
       width: auto;
     }
     span {
-      font-size: .7rem;
+      font-size: 0.7rem;
       margin-left: 10px;
     }
   }
-  
 
   .Light {
     text-align: right;
@@ -135,11 +134,22 @@
     outline: none;
     color: #fff;
     cursor: pointer;
+
+    &:disabled,
+    &[disabled] {
+      cursor: not-allowed;
+    }
   }
 
   .Error {
-    line-height: .9;
+    line-height: 0.9;
     color: red;
+    margin-bottom: 8px;
+  }
+
+  .Status {
+    line-height: 0.9;
+    color: green;
     margin-bottom: 8px;
   }
 }
