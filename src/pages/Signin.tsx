@@ -3,12 +3,13 @@ import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../utils/firebase";
 import { PasswordInput, TextInput } from "../components/FormElements";
 import InlineLoader from "../components/loaders/InlineLoader";
 import { IUserData, UserStatus } from "../@types/@types.users";
 import styles from "../styles/Auth.module.scss";
-import { doc, updateDoc } from "@firebase/firestore";
+
 
 const validation = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),

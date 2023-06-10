@@ -1,7 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/Chat.module.scss";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db } from "../../utils/firebase";
 
-export default function ChatContent() {
+export default function ChatContent({ user }: any) {
+  const currentUser = useCurrentUser();
+  const [chats, setChats] = useState<any>([]);
+
+  useEffect(() => {
+    const getChats = async () => {
+      if (currentUser && user) {
+        const res = await getDoc(doc(db, "usersChats", `${currentUser.uid}-${user.uid}`));
+        const res2 = await getDoc(
+          doc(db, "usersChats", `${user.uid}-${currentUser.uid}`)
+        );
+        console.log('res', res);
+        console.log('res2', res2);
+        // return () => {
+        //   getUserFriendsChats();
+        // };
+      }
+    };
+
+    currentUser?.uid && getChats();
+  }, [currentUser?.uid]);
+
   return (
     <>
       <div className={styles.ContactProfile}>

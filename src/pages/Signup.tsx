@@ -12,12 +12,12 @@ import { IUserData, UserStatus } from "../@types/@types.users";
 import styles from "../styles/Auth.module.scss";
 
 const validation = Yup.object({
-  username: Yup.string()
+  displayName: Yup.string()
     .min(3, "Must be 3 characters or more")
     .max(20, "Must be 20 characters or less")
     .required("Required"),
   email: Yup.string().email("Invalid email address").required("Required"),
-  displayImg: Yup.mixed().required(),
+  photoURL: Yup.mixed().required(),
   password: Yup.string()
     .max(20, "Must be 20 characters or less")
     .required("Required"),
@@ -31,10 +31,10 @@ function Signup() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSignup = async ({
-    username,
+    displayName,
     email,
     password,
-    displayImg,
+    photoURL,
   }: IUserData) => {
     setIsSubmitting(true);
     try {
@@ -44,8 +44,9 @@ function Signup() {
         password
       );
       const user = userCredential.user;
-      const storageRef = ref(storage, username || displayImg.name);
-      const uploadTask = uploadBytesResumable(storageRef, displayImg);
+      const date = new Date().getTime();
+      const storageRef = ref(storage, `${displayName || photoURL.name}-${date}`);
+      const uploadTask = uploadBytesResumable(storageRef, photoURL);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -59,21 +60,19 @@ function Signup() {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            console.log("downloadURL", downloadURL);
             await updateProfile(user, {
-              displayName: username,
+              displayName,
               photoURL: downloadURL,
             });
             await setDoc(doc(db, "users", user.uid), {
               uid: user.uid,
-              displayName: username,
+              displayName,
               email,
               photoURL: downloadURL,
               status: UserStatus.online,
             });
-            await setDoc(doc(db, "usersFriends", user.uid), {});
-            await setDoc(doc(db, "usersChats", user.uid), {});
-            await setDoc(doc(db, "usersAttachments", user.uid), {});
+            await setDoc(doc(db, "userFriends", user.uid), {});
+            await setDoc(doc(db, "userAttachments", user.uid), {});
             navigate("/chat");
           });
         }
@@ -91,10 +90,10 @@ function Signup() {
         <h1 className={styles.Title}>Signup</h1>
         <Formik
           initialValues={{
-            username: "",
+            displayName: "",
             email: "",
             password: "",
-            displayImg: "",
+            photoURL: "",
           }}
           validationSchema={validation}
           onSubmit={(values, { setSubmitting }) => {
@@ -112,10 +111,10 @@ function Signup() {
                 </header>
 
                 <div className={styles.Inputs}>
-                  <TextInput name="username" placeholder="username" />
+                  <TextInput name="displayName" placeholder="username" />
                   <TextInput name="email" placeholder="email" />
                   <PasswordInput name="password" placeholder="password" />
-                  <label className={styles.PhotoLabel} htmlFor="displayImg">
+                  <label className={styles.PhotoLabel} htmlFor="photoURL">
                     {photoUrl ? (
                       <>
                         <img
@@ -136,15 +135,15 @@ function Signup() {
                       </>
                     )}
                     <input
-                      id="displayImg"
-                      name="displayImg"
+                      id="photoURL"
+                      name="photoURL"
                       accept="image/*"
                       type="file"
                       hidden
                       onChange={(e: any) => {
                         if (e.target.files && e.target.files[0]) {
                           setPhotoUrl(URL.createObjectURL(e.target.files[0]));
-                          setFieldValue("displayImg", e.currentTarget.files[0]);
+                          setFieldValue("photoURL", e.currentTarget.files[0]);
                         } else {
                           setError("Please upload a valid image");
                         }

@@ -1,0 +1,118 @@
+@import "../../styles/variable";
+
+.ModalBackground {
+  width: 100vw;
+  height: 100vh;
+  background-color: #3d3b3bc2;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.ModalContainer {
+  width: 400px;
+  height: 300px;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+
+  .ModalHeading {
+    display: flex;
+    justify-content: space-between;
+  
+    .Title {
+      margin: 0 auto;
+      color: $lighter;
+    }
+  
+    .CloseBtn {
+      background-color: transparent;
+      width: 40px;
+      height: 40px;
+      border: none;
+      font-size: 25px;
+      cursor: pointer;
+      color: crimson;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  
+      &:hover {
+        background-color: crimson;
+        color: #fff;
+      }
+    }
+  }
+
+  .Search {
+    margin: 20px 0;
+    border-top: 1px solid $lighter;
+    border-bottom: 1px solid $lighter;
+    font-weight: 300;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+    background: $lighter;
+    margin-bottom: 20px;
+    @media screen and (max-width: $break) {
+      display: none;
+    }
+  
+    label {
+      margin: 0 10px;
+      cursor: pointer;
+  
+      i {
+        border-left: 1px dotted rgb(193, 194, 195);
+        padding: 10px;
+      }
+    }
+  
+    input {
+      font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+      padding: 7px 10px;
+      width: 100%;
+      border: none;
+      background: $lighter;
+      color: $white;
+  
+      &:focus {
+        outline: none;
+        background: $light;
+      }
+  
+      &::-webkit-input-placeholder {
+        color: $white;
+      }
+      &::-moz-placeholder {
+        color: $white;
+      }
+      &:-ms-input-placeholder {
+        color: $white;
+      }
+      &:-moz-placeholder {
+        color: $white;
+      }
+    }
+  }
+
+  .Body {
+    display: flex;
+    align-items: center;
+    font-size: 1.7rem;
+    text-align: center;
+
+    .Error {
+      color: crimson;
+      font-size: 1rem;
+    }
+  }
+}

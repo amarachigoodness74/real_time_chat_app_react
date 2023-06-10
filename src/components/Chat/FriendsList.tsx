@@ -1,29 +1,26 @@
 import React from "react";
 import { IUser } from "../../@types/@types.users";
 import styles from "../../styles/Chat.module.scss";
+import Friend from "./Friend";
 
 type FriendsListProps = {
-  users: IUser[]
-}
+  users: IUser[];
+};
 
 export default function FriendsList({ users }: FriendsListProps) {
   return (
     <div className={styles.Contacts}>
-      <ul>
-        {users.map((user) => (
-          <li className={styles.Contact} key={user.id}>
-            <div className={styles.Wrap}>
-              {/* <span className="contact-status online"></span> */}
-              <span className={styles.ContactStatus}></span>
-              <img src={user.profilePics} alt="" />
-              <div className={styles.Meta}>
-                <p className={styles.Name}>{user.name}</p>
-                <p className={styles.Preview}>{user.lastChat}</p>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {users.length > 0 ? (
+        <ul>
+          {users.map((user) => (
+            <li className={styles.Contact} key={user.id}>
+              <Friend user={user} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <span className={styles.NoContacts}>You have no friend yet.</span>
+      )}
     </div>
   );
 }

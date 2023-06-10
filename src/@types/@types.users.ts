@@ -2,17 +2,18 @@
 import { User } from "firebase/auth";
 
 export interface IUserData {
-  username?: string;
+  displayName?: string;
   email: string;
   password: string;
-  displayImg?: any;
+  photoURL?: any;
 };
 
 export interface IUser {
   id: number;
-  name: string;
-  profilePics: string;
+  displayName: string;
+  photoURL: string;
   lastChat: string;
+  status: UserStatus;
 };
 
 export type AuthContextType = {

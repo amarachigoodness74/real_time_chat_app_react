@@ -25,6 +25,15 @@ function Profile() {
     handleStatusDropdown();
   };
 
+  const handleSignOut = async () => {
+    if (currentUser) {
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        status: "Offline",
+      });
+    }
+    await signOut(auth);
+  };
+
   return (
     <div className={styles.Profile}>
       {currentUser ? (
@@ -74,7 +83,7 @@ function Profile() {
           </div>
           <span
             className={styles.StatusBtn}
-            onClick={() => signOut(auth)}
+            onClick={handleSignOut}
             title="Logout"
           >
             <i className="fa fa-sign-out"></i>

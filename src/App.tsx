@@ -30,8 +30,10 @@ function App() {
       <Routes>
         <Route path="/" element={<SigninPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        {/* Todo */}
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        {/* End of Todo */}
         <Route
           path="/chat"
           element={
