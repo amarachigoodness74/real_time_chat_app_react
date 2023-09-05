@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import styles from "../../styles/Chat.module.scss";
 import AddFriendModal from "../AddFriendModal";
+import styles from "../../styles/Chat.module.scss";
 
 export default function AddFriend() {
   const [modalOpen, setModalOpen] = useState<Boolean>(false);

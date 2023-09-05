@@ -4,19 +4,19 @@ import { IUser } from "../../@types/@types.users";
 import styles from "../../styles/Chat.module.scss";
 
 interface FriendProps {
-  user: IUser | DocumentData;
+  friend: IUser | DocumentData;
 }
 
-export default function Friend({ user }: FriendProps) {
+export default function Friend({ friend }: FriendProps) {
   return (
     <div className={styles.FriendWrap}>
       {/* <span className="contact-status online"></span> */}
       <span className={styles.ContactStatus}></span>
-      <img src={user.photoURL} alt="" />
+      <img src={friend.photoURL} alt="" />
       <div className={styles.Meta}>
-        <p className={styles.Name}>{user.displayName}</p>
-        <p className={styles.Preview}>{user.lastChat}</p>
-        {user.lastChat && <p className={styles.Preview}>{user.lastChat}</p>}
+        <p className={styles.Name}>{friend.displayName}</p>
+        <p className={styles.Preview}>{friend.lastChat}</p>
+        {friend.lastChat && <p className={styles.Preview}>{friend.lastChat}</p>}
       </div>
     </div>
   );

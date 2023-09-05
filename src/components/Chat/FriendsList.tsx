@@ -4,17 +4,17 @@ import styles from "../../styles/Chat.module.scss";
 import Friend from "./Friend";
 
 type FriendsListProps = {
-  users: IUser[];
+  friends: IUser[];
 };
 
-export default function FriendsList({ users }: FriendsListProps) {
+export default function FriendsList({ friends }: FriendsListProps) {
   return (
     <div className={styles.Contacts}>
-      {users.length > 0 ? (
+      {friends.length > 0 ? (
         <ul>
-          {users.map((user) => (
-            <li className={styles.Contact} key={user.id}>
-              <Friend user={user} />
+          {friends.map((friend) => (
+            <li className={styles.Contact} key={friend.id}>
+              <Friend friend={friend} />
             </li>
           ))}
         </ul>

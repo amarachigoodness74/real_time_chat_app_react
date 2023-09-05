@@ -26,6 +26,7 @@
   .ModalHeading {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   
     .Title {
       margin: 0 auto;
@@ -34,10 +35,10 @@
   
     .CloseBtn {
       background-color: transparent;
-      width: 40px;
-      height: 40px;
+      width: 20px;
+      height: 20px;
       border: none;
-      font-size: 25px;
+      font-size: 15px;
       cursor: pointer;
       color: crimson;
       display: flex;

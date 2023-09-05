@@ -53,6 +53,11 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
     if (user && currentUser) {
       combinedId = `${currentUser.uid}-${user.uid}`;
 
+      if(user.uid === currentUser.uid) {
+        setError("Not allowed!!!");
+        return;
+      }
+
       try {
         const res = await getDoc(doc(db, "usersChats", combinedId));
         const res2 = await getDoc(
@@ -70,7 +75,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
             },
           });
           await updateDoc(doc(db, "userFriends", user.uid), {
-            [combinedId]: {
+            [`${user.uid}-${currentUser.uid}`]: {
               uid: currentUser.uid,
               displayName: currentUser.displayName,
               photoURL: currentUser.photoURL,
@@ -121,7 +126,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
           {error && <span className={styles.Error}>{error}</span>}
           {!error && user && (
             <div onClick={handleSelect}>
-              <Friend user={user} />
+              <Friend friend={user} />
             </div>
           )}
         </div>

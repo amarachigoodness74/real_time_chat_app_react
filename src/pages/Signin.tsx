@@ -72,7 +72,7 @@ function Signin() {
 
               <div className={styles.Inputs}>
                 <TextInput name="email" placeholder="email" />
-                <PasswordInput name="password" placeholder="password" />
+                <PasswordInput name="password" placeholder="password" autoComplete={true} />
                 <p className={styles.Light}>
                   <Link to="/forgot-password">Forgot password?</Link>
                 </p>

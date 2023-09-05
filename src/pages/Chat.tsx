@@ -14,7 +14,7 @@ export default function Chat() {
   const currentUser = useCurrentUser();
   const [searchField, setSearchField] = useState("");
   const [friends, setFriends] = useState<IUser[] | []>([]);
-  const [currentChat, setCurrentChat] = useState<any>(friends[0]);
+  const [currentChat, setCurrentChat] = useState<IUser | null>(friends[0]);
 
   useEffect(() => {
     const getFriends = () => {
@@ -32,7 +32,7 @@ export default function Chat() {
     };
 
     currentUser?.uid && getFriends();
-  }, [currentUser?.uid]);
+  }, [currentUser, currentUser?.uid]);
 
   const handleSearch = (e: KeyboardEvent<HTMLInputElement>) =>
     setSearchField(() => (e.target as HTMLInputElement).value.toLowerCase());
@@ -49,7 +49,7 @@ export default function Chat() {
         <div className={styles.SidePanel}>
           <Profile />
           {filteredUsers.length > 2 && <Search handleSearch={handleSearch} />}
-          <FriendsList users={filteredUsers} />
+          <FriendsList friends={filteredUsers} />
           <p className={styles.Spacer}></p>
           <AddFriend />
         </div>
