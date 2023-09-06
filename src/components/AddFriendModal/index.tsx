@@ -22,7 +22,7 @@ interface ModalProp {
 export default function AddFriendModal({ setModalOpen }: ModalProp) {
   const currentUser = useCurrentUser();
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState<DocumentData | null>(null);
+  const [users, setUsers] = useState<DocumentData[] | []>([]);
   const [error, setError] = useState<string | null>(null);
 
   const handleSearch = async () => {
@@ -35,7 +35,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         setError(null);
-        setUser(doc.data());
+        setUsers([...users, doc.data()]);
       });
     } catch (err) {
       console.log("errrrrrrr", err);
@@ -47,35 +47,36 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
     e.code === "Enter" && handleSearch();
   };
 
-  const handleSelect = async () => {
-    //check whether the group(chats in firestore) exists, if not create
-    let combinedId;
+  const handleSelect = async (user: DocumentData) => {
     if (user && currentUser) {
-      combinedId = `${currentUser.uid}-${user.uid}`;
-
       if(user.uid === currentUser.uid) {
         setError("Not allowed!!!");
         return;
       }
 
       try {
-        const res = await getDoc(doc(db, "usersChats", combinedId));
+        //check whether the group(chats in firestore) exists, if not create
+        const current_userFriend = `${currentUser.uid}-${user.uid}`;
+        const friendCurrent_user = `${user.uid}-${currentUser.uid}`;
+        const res = await getDoc(doc(db, "chats", current_userFriend));
         const res2 = await getDoc(
-          doc(db, "usersChats", `${user.uid}-${currentUser.uid}`)
+          doc(db, "chats", friendCurrent_user)
         );
 
         if (!res.exists() && !res2.exists()) {
-          await setDoc(doc(db, "usersChats", combinedId), { messages: [] });
-          await updateDoc(doc(db, "userFriends", currentUser.uid), {
-            [combinedId]: {
+          await setDoc(doc(db, "chats", current_userFriend), { messages: [] });
+
+          // Update friends doc for both newly made friends
+          await updateDoc(doc(db, "friends", currentUser.uid), {
+            [current_userFriend]: {
               uid: user.uid,
               displayName: user.displayName,
               photoURL: user.photoURL,
               lastChat: "",
             },
           });
-          await updateDoc(doc(db, "userFriends", user.uid), {
-            [`${user.uid}-${currentUser.uid}`]: {
+          await updateDoc(doc(db, "friends", user.uid), {
+            [friendCurrent_user]: {
               uid: currentUser.uid,
               displayName: currentUser.displayName,
               photoURL: currentUser.photoURL,
@@ -90,7 +91,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
         setError("Something went wrong!!!");
       }
 
-      setUser(null);
+      setUsers([]);
       setUsername("");
     }
   };
@@ -124,11 +125,11 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
         </div>
         <div className={styles.Body}>
           {error && <span className={styles.Error}>{error}</span>}
-          {!error && user && (
-            <div onClick={handleSelect}>
+          {!error && users.length > 0 && users.map(user => (
+            <div onClick={() => handleSelect(user)}>
               <Friend friend={user} />
             </div>
-          )}
+          ))}
         </div>
       </div>
     </div>

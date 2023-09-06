@@ -1,48 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import styles from "../../styles/Chat.module.scss";
-import { IUser } from "../../@types/@types.users";
+import ChatContext from "../../context/ChatContext";
 
-export default function ChatContent(user: any) {
+export default function ChatContent() {
+  const { state, dispatch } = useContext(ChatContext);
   const currentUser = useCurrentUser();
   const [chats, setChats] = useState<any>([]);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('user', user);
-
   useEffect(() => {
+    const friend = state.user;
     const getChats = async () => {
-      if (currentUser && user) {
-        const res = await getDoc(
-          doc(db, "usersChats", `${currentUser.uid}-${user.uid}`)
-        );
-        const res2 = await getDoc(
-          doc(db, "usersChats", `${user.uid}-${currentUser.uid}`)
-        );
-        console.log("res", res);
-        console.log("res2", res2);
-        // return () => {
-        //   getUserFriendsChats();
-        // };
+      if (currentUser && friend) {
+        //check whether the group(chats in firestore) exists, if not create
+        const current_userFriend = `${currentUser.uid}-${friend.uid}`;
+        const friendCurrent_user = `${friend.uid}-${currentUser.uid}`;
+        const res = await getDoc(doc(db, "chats", current_userFriend));
+        const res2 = await getDoc(doc(db, "chats", friendCurrent_user));
+        setChats(res.data()|| res2.data());
       }
     };
 
     currentUser?.uid && getChats();
-  }, [currentUser, currentUser?.uid, user]);
+  }, [currentUser, currentUser?.uid]);
+
+  const friend = state.user;
 
   return (
     <section>
       {chats.length > 0 ? (
         <>
-         <div className={styles.ContactProfile}>
+          <div className={styles.ContactProfile}>
             <div className={styles.FriendProfile}>
-              <img
-                src={user.photoURL}
-                alt={user.displayName}
-              />
-              <p>{user.displayName}</p>
+              <img src={friend.photoURL} alt={friend.displayName} />
+              <p>{friend.displayName}</p>
             </div>
             <div className={styles.ChatOptions}>
               <span className={styles.StatusBtn}>
@@ -53,23 +47,6 @@ export default function ChatContent(user: any) {
               </span>
             </div>
           </div>
-          {/* <div className={styles.ContactProfile}>
-            <div className={styles.FriendProfile}>
-              <img
-                src="http://emilcarlsson.se/assets/harveyspecter.png"
-                alt=""
-              />
-              <p>Harvey Specter</p>
-            </div>
-            <div className={styles.ChatOptions}>
-              <span className={styles.StatusBtn}>
-                <i className="fa fa-video-camera"></i>
-              </span>
-              <span className={styles.StatusBtn}>
-                <i className="fa fa-phone"></i>
-              </span>
-            </div>
-          </div> */}
           <div className={styles.Messages}>
             <ul>
               <li className={styles.Sent}>

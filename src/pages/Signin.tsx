@@ -7,7 +7,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../utils/firebase";
 import { PasswordInput, TextInput } from "../components/FormElements";
 import InlineLoader from "../components/loaders/InlineLoader";
-import { IUserData, UserStatus } from "../@types/@types.users";
+import { IAuthData, UserStatus } from "../@types/@types.users";
 import styles from "../styles/Auth.module.scss";
 
 
@@ -23,7 +23,7 @@ function Signin() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleSignin = async ({ email, password }: IUserData) => {
+  const handleSignin = async ({ email, password }: IAuthData) => {
     setIsSubmitting(true);
     try {
       const userCredential = await signInWithEmailAndPassword(

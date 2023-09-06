@@ -8,7 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, storage, db } from "../utils/firebase";
 import { PasswordInput, TextInput } from "../components/FormElements";
 import InlineLoader from "../components/loaders/InlineLoader";
-import { IUserData, UserStatus } from "../@types/@types.users";
+import { IAuthData, UserStatus } from "../@types/@types.users";
 import styles from "../styles/Auth.module.scss";
 
 const validation = Yup.object({
@@ -35,7 +35,7 @@ function Signup() {
     email,
     password,
     photoURL,
-  }: IUserData) => {
+  }: IAuthData) => {
     setIsSubmitting(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -71,8 +71,9 @@ function Signup() {
               photoURL: downloadURL,
               status: UserStatus.online,
             });
-            await setDoc(doc(db, "userFriends", user.uid), {});
-            await setDoc(doc(db, "userAttachments", user.uid), {});
+
+            //create empty friends document on firestore
+            await setDoc(doc(db, "friends", user.uid), {});
             navigate("/chat");
           });
         }

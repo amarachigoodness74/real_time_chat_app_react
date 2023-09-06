@@ -1,7 +1,7 @@
 // @types.users.ts
 import { User } from "firebase/auth";
 
-export interface IUserData {
+export interface IAuthData {
   displayName?: string;
   email: string;
   password: string;
@@ -9,11 +9,12 @@ export interface IUserData {
 };
 
 export interface IUser {
-  id: number;
+  uid: string;
+  email?: string;
   displayName: string;
   photoURL: string;
-  lastChat: string;
-  status: UserStatus;
+  lastChat?: string;
+  status?: UserStatus;
 };
 
 export type AuthContextType = {

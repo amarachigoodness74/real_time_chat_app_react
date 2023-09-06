@@ -20,7 +20,7 @@ export default function Chat() {
     const getFriends = () => {
       if (currentUser) {
         const getUserFriends = onSnapshot(
-          doc(db, "userFriends", currentUser.uid),
+          doc(db, "friends", currentUser.uid),
           (doc: any) => {
             setFriends(Object.values(doc.data()));
           }
@@ -54,7 +54,7 @@ export default function Chat() {
           <AddFriend />
         </div>
         <div className={styles.ChatContent}>
-          <ChatContent user={currentChat} />
+          <ChatContent />
         </div>
       </div>
     </section>
