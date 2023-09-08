@@ -1,6 +1,7 @@
 import { createContext, useReducer } from "react";
+import chatReducer from "../reducers/chat.reducer";
 import { AuxProps } from "../@types/@types.children";
-import { ChatContextType } from "../@types/@types.chats";
+import { ChatActions, ChatContextType } from "../@types/@types.chats";
 
 const INITIAL_STATE: ChatContextType = {
   user: null,
@@ -8,25 +9,13 @@ const INITIAL_STATE: ChatContextType = {
 
 export const ChatContext = createContext<{
   state: ChatContextType;
-  dispatch: React.Dispatch<any>;
+  dispatch: React.Dispatch<ChatActions>;
 }>({
   state: INITIAL_STATE,
   dispatch: () => null,
 });
 
-const chatReducer = (state: ChatContextType, action: { type: any; payload: any; }) => {
-  switch (action.type) {
-    case "CHANGE_FRIEND":
-      return {
-        user: action.payload
-      };
-
-    default:
-      return state;
-  }
-};
-
-const ChatContextProvider = ({ children }: AuxProps) => {
+export const ChatContextProvider = ({ children }: AuxProps) => {
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
   return (

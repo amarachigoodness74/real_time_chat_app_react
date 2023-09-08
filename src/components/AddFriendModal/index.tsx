@@ -72,7 +72,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
               uid: user.uid,
               displayName: user.displayName,
               photoURL: user.photoURL,
-              lastChat: "",
+              lastChat: null,
             },
           });
           await updateDoc(doc(db, "friends", user.uid), {
@@ -80,7 +80,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
               uid: currentUser.uid,
               displayName: currentUser.displayName,
               photoURL: currentUser.photoURL,
-              lastChat: "",
+              lastChat: null,
             },
           });
         } else {

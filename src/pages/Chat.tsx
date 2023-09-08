@@ -14,7 +14,6 @@ export default function Chat() {
   const currentUser = useCurrentUser();
   const [searchField, setSearchField] = useState("");
   const [friends, setFriends] = useState<IUser[] | []>([]);
-  const [currentChat, setCurrentChat] = useState<IUser | null>(friends[0]);
 
   useEffect(() => {
     const getFriends = () => {

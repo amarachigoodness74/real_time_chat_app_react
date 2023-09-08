@@ -15,7 +15,6 @@ export default function Friend({ friend }: FriendProps) {
       <img src={friend.photoURL} alt="" />
       <div className={styles.Meta}>
         <p className={styles.Name}>{friend.displayName}</p>
-        <p className={styles.Preview}>{friend.lastChat}</p>
         {friend.lastChat && <p className={styles.Preview}>{friend.lastChat}</p>}
       </div>
     </div>

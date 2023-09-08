@@ -1,5 +1,4 @@
 // @types.chats.ts
-import { User } from "firebase/auth";
 import { IUser } from "./@types.users";
 
 type ActionMap<M extends { [index: string]: any }> = {
@@ -13,16 +12,18 @@ type ActionMap<M extends { [index: string]: any }> = {
       }
 };
 
-enum ChatActionKind {
+export enum ChatActionKind {
   CHANGE_FRIEND = 'CHANGE_FRIEND'
 }
 
 export type ChatContextType = {
-  user: User | null;
+  user: IUser | null;
 };
 
 type ChatPayload = {
-  [ChatActionKind.CHANGE_FRIEND] : IUser;
+  [ChatActionKind.CHANGE_FRIEND] : {
+    user: IUser | null;
+  };
 }
 
 export type ChatActions = ActionMap<ChatPayload>[keyof ActionMap<ChatPayload>];

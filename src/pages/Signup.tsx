@@ -51,7 +51,7 @@ function Signup() {
         "state_changed",
         (snapshot) => {
           const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
           setUploadState("Upload is " + progress + "% done");
         },
         (error: any) => {
