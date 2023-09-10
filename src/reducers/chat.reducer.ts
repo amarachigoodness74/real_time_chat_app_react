@@ -4,7 +4,8 @@ const chatReducer = (state: ChatContextType, action: any) => {
   switch (action.type) {
     case "CHANGE_FRIEND":
       return {
-        user: action.payload
+        ...state,
+        user: action.payload.user
       };
 
     default:

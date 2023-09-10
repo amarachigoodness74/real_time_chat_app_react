@@ -6,7 +6,6 @@ import {
   arrayUnion,
   doc,
   getDoc,
-  onSnapshot,
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
@@ -19,8 +18,8 @@ export default function ChatContent() {
   const { state } = useContext(ChatContext);
 
   const [chatId, setChatId] = useState<string | null>(null);
-  const [chats, setChats] = useState<any>([]);
-  const [newMessage, setNewMessage] = useState<string | null>(null);
+  const [chats, setChats] = useState<any>(null);
+  const [newMessage, setNewMessage] = useState<string>("");
   const [image, setImage] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,12 +27,18 @@ export default function ChatContent() {
 
   const handleSend = async () => {
     if (currentUser && friend && chatId) {
+      const date = new Date().getTime();
       if (image) {
-        const storageRef = ref(storage, `${chatId}-${Timestamp.now()}`);
+        const storageRef = ref(storage, `${chatId}-${date}`);
         const uploadTask = uploadBytesResumable(storageRef, image);
 
         uploadTask.on(
           "state_changed",
+          (snapshot) => {
+            const progress =
+              ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
+            console.log("Upload is " + progress + "% done");
+          },
           (error: any) => {
             console.error("error", error);
             setError("Could not upload file");
@@ -64,18 +69,16 @@ export default function ChatContent() {
       }
 
       await updateDoc(doc(db, "friends", currentUser.uid), {
-        [`${currentUser.uid}-${friend.uid}`]: {
-          lastChat: newMessage,
-        },
+        [chatId + ".lastChat"]: newMessage,
+        [chatId + ".date"]: serverTimestamp(),
       });
 
       await updateDoc(doc(db, "friends", friend.uid), {
-        [`${friend.uid}-${currentUser.uid}`]: {
-          lastChat: newMessage,
-        },
+        [chatId + ".lastChat"]: newMessage,
+        [chatId + ".date"]: serverTimestamp(),
       });
 
-      setNewMessage(null);
+      setNewMessage("");
       setImage(null);
     }
   };
@@ -104,8 +107,8 @@ export default function ChatContent() {
 
   return (
     <section>
-      {friend && chats && chats.length > 0 ? (
-        <>
+      <>
+        {friend && (
           <div className={styles.ContactProfile}>
             <div className={styles.FriendProfile}>
               <img src={friend.photoURL} alt={friend.displayName} />
@@ -120,39 +123,49 @@ export default function ChatContent() {
               </span>
             </div>
           </div>
+        )}
+        {friend && chats && chats.messages.length > 0 ? (
           <div className={styles.Messages}>
             <ul>
-              <li className={styles.Sent}>
-                <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                <p>
-                  How the hell am I supposed to get a jury to believe you when I
-                  am not even sure that I do?!
-                </p>
-              </li>
-              <li className={styles.Replies}>
-                <img
-                  src="http://emilcarlsson.se/assets/harveyspecter.png"
-                  alt=""
-                />
-                <p>
-                  When you're backed against the wall, break the god damn thing
-                  down.
-                </p>
-              </li>
+              {currentUser &&
+                chats.messages.map((message: any) => (
+                  <>
+                  {message.img && <img src={message.img} alt={message.text} />}
+                  <li
+                    className={
+                      message.senderId === currentUser.uid
+                        ? styles.Sent
+                        : styles.Replies
+                    }
+                    key={message.uid}
+                  >
+                    <img
+                      src={
+                        (message.senderId === currentUser.uid
+                          ? currentUser.photoURL
+                          : friend.photoURL) || ""
+                      }
+                      alt={
+                        (message.senderId === currentUser.uid
+                          ? currentUser.displayName
+                          : friend.displayName) || ""
+                      }
+                    />
+                    <p>{message.text}</p>
+                  </li>
+                  </>
+                ))}
             </ul>
           </div>
-        </>
-      ) : (
-        <div>Start new chat</div>
-      )}
+        ) : (
+          <div>Start new chat</div>
+        )}
+      </>
       <div className={styles.MessageInput}>
         {error && <p className={styles.Error}>{error}</p>}
         {image && (
           <div className={styles.messageImage}>
-            <img
-              src={image}
-              alt="Profile Avatar"
-            />
+            <img src={image} alt="New message attachment" />
             <span onClick={() => setImage(null)}>x</span>
           </div>
         )}
@@ -160,12 +173,13 @@ export default function ChatContent() {
           <input
             type="text"
             placeholder="Write your message..."
+            value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
-          <label className={styles.PhotoLabel} htmlFor="photoURL">
+          <label className={styles.PhotoLabel} htmlFor="attachment">
             <input
-              id="photoURL"
-              name="photoURL"
+              id="attachment"
+              name="attachment"
               type="file"
               hidden
               onChange={(e: any) => {

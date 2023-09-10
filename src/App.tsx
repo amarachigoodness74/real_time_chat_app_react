@@ -18,6 +18,11 @@ const ChatPage = lazy(() => reloadOnFail(() => import("./pages/Chat")));
 
 function App() {
   const currentUser = useCurrentUser();
+//   firebase.auth().onAuthStateChanged((user) => {
+//     if (user) {
+//       console.log('user is logged');
+//     }
+// });
   const ProtectedRoute = ({ children }: AuxProps) => {
     if (!currentUser) {
       return <Navigate to="/" />;

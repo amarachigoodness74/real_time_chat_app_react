@@ -74,7 +74,7 @@ function Signup() {
 
             //create empty friends document on firestore
             await setDoc(doc(db, "friends", user.uid), {});
-            navigate("/chat");
+            navigate("/");
           });
         }
       );
