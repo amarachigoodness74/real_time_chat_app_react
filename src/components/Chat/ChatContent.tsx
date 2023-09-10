@@ -35,8 +35,10 @@ export default function ChatContent() {
         uploadTask.on(
           "state_changed",
           (snapshot) => {
-            const progress =
-              ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
+            const progress = (
+              (snapshot.bytesTransferred / snapshot.totalBytes) *
+              100
+            ).toFixed(0);
             console.log("Upload is " + progress + "% done");
           },
           (error: any) => {
@@ -129,31 +131,43 @@ export default function ChatContent() {
             <ul>
               {currentUser &&
                 chats.messages.map((message: any) => (
-                  <>
-                  {message.img && <img src={message.img} alt={message.text} />}
-                  <li
-                    className={
-                      message.senderId === currentUser.uid
-                        ? styles.Sent
-                        : styles.Replies
-                    }
-                    key={message.uid}
-                  >
-                    <img
-                      src={
-                        (message.senderId === currentUser.uid
-                          ? currentUser.photoURL
-                          : friend.photoURL) || ""
+                  <React.Fragment key={message.uid}>
+                    {/* {message.img && <img src={message.img} alt={message.text} />} */}
+                    {message.img && (
+                      <li
+                        className={
+                          message.senderId === currentUser.uid
+                            ? styles.Sent
+                            : styles.Replies
+                        }
+                      >
+                        <a href={message.img} download>
+                          Download File
+                        </a>
+                      </li>
+                    )}
+                    <li
+                      className={
+                        message.senderId === currentUser.uid
+                          ? styles.Sent
+                          : styles.Replies
                       }
-                      alt={
-                        (message.senderId === currentUser.uid
-                          ? currentUser.displayName
-                          : friend.displayName) || ""
-                      }
-                    />
-                    <p>{message.text}</p>
-                  </li>
-                  </>
+                    >
+                      <img
+                        src={
+                          (message.senderId === currentUser.uid
+                            ? currentUser.photoURL
+                            : friend.photoURL) || ""
+                        }
+                        alt={
+                          (message.senderId === currentUser.uid
+                            ? currentUser.displayName
+                            : friend.displayName) || ""
+                        }
+                      />
+                      <p>{message.text}</p>
+                    </li>
+                  </React.Fragment>
                 ))}
             </ul>
           </div>

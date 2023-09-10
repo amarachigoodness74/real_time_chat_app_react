@@ -596,6 +596,10 @@
         }
 
         &.Sent {
+          a {
+            border: 1px dotted #000;
+            padding: 2px;
+          }
           img {
             float: right;
             margin: 6px 0 0 8px;
