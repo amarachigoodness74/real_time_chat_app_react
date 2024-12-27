@@ -1,42 +1,58 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Formik, Form } from "formik";
-import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, storage, db } from "../utils/firebase";
-import { PasswordInput, TextInput } from "../components/FormElements";
+import { SignupFormValues, UserStatus } from "../@types/@types.users";
 import InlineLoader from "../components/loaders/InlineLoader";
-import { IAuthData, UserStatus } from "../@types/@types.users";
-import styles from "../styles/Auth.module.scss";
 
-const validation = Yup.object({
-  displayName: Yup.string()
-    .min(3, "Must be 3 characters or more")
-    .max(20, "Must be 20 characters or less")
-    .required("Required"),
-  email: Yup.string().email("Invalid email address").required("Required"),
-  photoURL: Yup.mixed().required(),
-  password: Yup.string()
-    .max(20, "Must be 20 characters or less")
-    .required("Required"),
-});
-
-function Signup() {
+const Signup: React.FC = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState<null | string>(null);
-  const [photoUrl, setPhotoUrl] = useState<null | string>(null);
   const [photoUploadState, setUploadState] = useState<null | string>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleSignup = async ({
-    displayName,
-    email,
-    password,
-    photoURL,
-  }: IAuthData) => {
+  const initialValues: SignupFormValues = {
+    username: "",
+    email: "",
+    password: "",
+    profilePhoto: null,
+  };
+
+  const validationSchema = Yup.object({
+    username: Yup.string()
+      .min(3, "Username must be at least 3 characters")
+      .required("Username is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+    profilePhoto: Yup.mixed()
+      .nullable()
+      .test("fileSize", "File too large", (value: any) => {
+        return !value || (value && value.size <= 2 * 1024 * 1024); // 2MB limit
+      })
+      .test("fileType", "Unsupported file format", (value: any) => {
+        return (
+          !value ||
+          (value &&
+            ["image/jpeg", "image/png", "image/gif"].includes(value.type))
+        );
+      }),
+  });
+
+  const handleSubmit = async (values: SignupFormValues) => {
     setIsSubmitting(true);
+    const { username, email, password, profilePhoto } = values;
+    const displayName = username;
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -45,39 +61,48 @@ function Signup() {
       );
       const user = userCredential.user;
       const date = new Date().getTime();
-      const storageRef = ref(storage, `${displayName || photoURL.name}-${date}`);
-      const uploadTask = uploadBytesResumable(storageRef, photoURL);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
-          setUploadState("Upload is " + progress + "% done");
-        },
-        (error: any) => {
-          console.error("error", error);
-          setIsSubmitting(false);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await updateProfile(user, {
-              displayName,
-              photoURL: downloadURL,
-            });
-            await setDoc(doc(db, "users", user.uid), {
-              uid: user.uid,
-              displayName,
-              email,
-              photoURL: downloadURL,
-              status: UserStatus.online,
-            });
-
-            //create empty friends document on firestore
-            await setDoc(doc(db, "friends", user.uid), {});
-            navigate("/");
-          });
-        }
+      const storageRef = ref(
+        storage,
+        `${displayName || profilePhoto?.name}-${date}`
       );
+      if (profilePhoto) {
+        const uploadTask = uploadBytesResumable(storageRef, profilePhoto);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = (
+              (snapshot.bytesTransferred / snapshot.totalBytes) *
+              100
+            ).toFixed(0);
+            setUploadState("Upload is " + progress + "% done");
+          },
+          (error: any) => {
+            console.error("error", error);
+            setIsSubmitting(false);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                await updateProfile(user, {
+                  displayName,
+                  photoURL: downloadURL,
+                });
+                await setDoc(doc(db, "users", user.uid), {
+                  uid: user.uid,
+                  displayName,
+                  email,
+                  photoURL: downloadURL,
+                  status: UserStatus?.online,
+                });
+
+                //create empty friends document on firestore
+                await setDoc(doc(db, "friends", user.uid), {});
+                navigate("/");
+              }
+            );
+          }
+        );
+      }
     } catch (error: any) {
       setIsSubmitting(false);
       setError(error.message);
@@ -85,94 +110,132 @@ function Signup() {
   };
 
   return (
-    <section>
-      <div className={styles.Container}>
-        <div className={styles.Background}></div>
-        <h1 className={styles.Title}>Signup</h1>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md bg-white shadow-md rounded px-8 py-6">
+        <h2 className="text-cyan-700 text-2xl font-bold text-center mb-4">
+          Sign Up
+        </h2>
+        <header className="text-center">
+          <i className="text-6xl text-cyan-800 fa fa-expeditedssl"></i>
+        </header>
         <Formik
-          initialValues={{
-            displayName: "",
-            email: "",
-            password: "",
-            photoURL: "",
-          }}
-          validationSchema={validation}
-          onSubmit={(values, { setSubmitting }) => {
-            if (!error) {
-              handleSignup(values);
-            }
-            setSubmitting(false);
-          }}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
         >
           {({ setFieldValue }) => (
             <Form>
-              <div className={styles.Form}>
-                <header className={styles.FormHeader}>
-                  <i className="fa fa-expeditedssl"></i>
-                </header>
-
-                <div className={styles.Inputs}>
-                  <TextInput name="displayName" placeholder="username" />
-                  <TextInput name="email" placeholder="email" />
-                  <PasswordInput name="password" placeholder="password" />
-                  <label className={styles.PhotoLabel} htmlFor="photoURL">
-                    {photoUrl ? (
-                      <>
-                        <img
-                          src={photoUrl}
-                          alt="Profile Avatar"
-                          style={{
-                            borderRadius: "50%",
-                            width: "50px",
-                            height: "50px",
-                          }}
-                        />
-                        <span>Change avatar</span>
-                      </>
-                    ) : (
-                      <>
-                        <i className="fa fa-cloud-upload"></i>
-                        <span>Add an avatar</span>
-                      </>
-                    )}
-                    <input
-                      id="photoURL"
-                      name="photoURL"
-                      accept="image/*"
-                      type="file"
-                      hidden
-                      onChange={(e: any) => {
-                        if (e.target.files && e.target.files[0]) {
-                          setPhotoUrl(URL.createObjectURL(e.target.files[0]));
-                          setFieldValue("photoURL", e.currentTarget.files[0]);
-                        } else {
-                          setError("Please upload a valid image");
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
+              <div className="mb-4">
+                <label htmlFor="username" className="block text-gray-700">
+                  Username
+                </label>
+                <Field
+                  name="username"
+                  type="text"
+                  className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-cyan-700"
+                />
+                <ErrorMessage
+                  name="username"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
               </div>
 
-              <footer className={styles.Footer}>
-                {error && <p className={styles.Error}>{error}</p>}
-                {photoUploadState && (
-                  <p className={styles.Status}>{photoUploadState}</p>
-                )}
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-gray-700">
+                  Email
+                </label>
+                <Field
+                  name="email"
+                  type="email"
+                  className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-cyan-700"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-                <button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? <InlineLoader /> : "Continue"}
-                </button>
+              <div className="mb-4">
+                <label htmlFor="password" className="block text-gray-700">
+                  Password
+                </label>
+                <div className="relative">
+                  <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-cyan-700"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="profilePhoto" className="block text-gray-700">
+                  Profile Photo
+                </label>
+                <input
+                  id="profilePhoto"
+                  name="profilePhoto"
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => {
+                    setFieldValue(
+                      "profilePhoto",
+                      event.currentTarget.files?.[0] || null
+                    );
+                  }}
+                  className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-cyan-700"
+                />
+                <ErrorMessage
+                  name="profilePhoto"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-cyan-700 text-white py-2 px-4 rounded-md hover:bg-cyan-600 focus:outline-none focus:ring focus:ring-cyan-600 font-bold"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <InlineLoader /> : " Sign Up"}
+              </button>
+              {error && (
+                <div className="text-right py-3">
+                  <p className="text-red-500 text-sm">{error}</p>
+                </div>
+              )}
+              <div className="text-right pt-2">
+                {photoUploadState && (
+                  <p className="text-green-500 text-sm">{photoUploadState}</p>
+                )}
                 <p>
-                  Already have an account? <Link to="/">Sign in</Link>
-                </p>
-              </footer>
+                  Already have an account?
+                  <span className="text-cyan-700 font-bold hover:underline">
+                    {" "}
+                    <Link to="/">Sign in</Link>
+                  </span>
+                </p>{" "}
+              </div>
             </Form>
           )}
         </Formik>
       </div>
-    </section>
+    </div>
   );
-}
+};
 
 export default Signup;

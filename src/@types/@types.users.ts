@@ -6,7 +6,7 @@ export interface IAuthData {
   email: string;
   password: string;
   photoURL?: any;
-};
+}
 
 export interface IUser {
   uid: string;
@@ -15,15 +15,26 @@ export interface IUser {
   photoURL: string;
   lastChat?: string;
   status?: UserStatus;
-};
+}
 
 export type AuthContextType = {
   currentUser: User | null;
 };
 
 export enum UserStatus {
-  online = 'Online',
-  away = 'Away',
-  busy = 'Busy',
-  offline = 'Offline',
+  online = "Online",
+  away = "Away",
+  busy = "Busy",
+  offline = "Offline",
+}
+export interface SignupFormValues {
+  username: string;
+  email: string;
+  password: string;
+  profilePhoto: File | null;
+}
+
+export interface SigninFormValues {
+  email: string;
+  password: string;
 }

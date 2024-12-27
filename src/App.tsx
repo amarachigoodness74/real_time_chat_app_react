@@ -4,7 +4,7 @@ import PageLoader from "./components/loaders/PageLoader";
 import reloadOnFail from "./utils/reloadOnFail";
 import useCurrentUser from "./hooks/useCurrentUser";
 import { AuxProps } from "./@types/@types.children";
-import "./styles/main.scss";
+// import "./styles/main.scss";
 
 const SignupPage = lazy(() => reloadOnFail(() => import("./pages/Signup")));
 const SigninPage = lazy(() => reloadOnFail(() => import("./pages/Signin")));
