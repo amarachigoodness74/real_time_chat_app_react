@@ -35,8 +35,8 @@
   overflow: hidden;
   position: relative;
   @media screen and (max-width: $break) {
-    width: 58px;
-    min-width: 58px;
+    width: 70px;
+    min-width: 6px;
   }
 }
 
@@ -49,9 +49,11 @@
   justify-content: space-between;
 
   @media screen and (max-width: $break) {
+    flex-direction: column-reverse;
+    justify-content: center;
     width: 100%;
     margin: 0 auto;
-    padding: 5px 0 0 0;
+    padding: 5px;
     background: $lighter;
   }
 
@@ -288,6 +290,13 @@
     border-radius: 50%;
     text-align: center;
     cursor: pointer;
+
+    @media screen and (max-width: $break) {
+      font-size: 1.5rem;
+      padding: 1px 8px;
+      color: #f73f3f;
+      background: none;
+    }
   }
 }
 
@@ -386,6 +395,9 @@
       padding: 10px 0 15px 0;
       font-size: 0.9em;
       cursor: pointer;
+      width: 85%;
+      margin: 0 auto;
+      color: $white;
       @media screen and (max-width: $break) {
         padding: 6px 0 46px 8px;
       }
@@ -412,7 +424,6 @@
 }
 
 .FriendWrap {
-  width: 85%;
   margin: 0 auto;
   position: relative;
   display: flex;
@@ -463,7 +474,7 @@
 
     .Name {
       font-weight: 600;
-      color: $white;
+      font-size: 1rem;
     }
 
     .Preview {
@@ -523,11 +534,14 @@
 }
 
 .ChatContent {
-  width: 70%;
   height: 100%;
+  width: 90%;
   overflow: hidden;
   position: relative;
-  min-width: 400px;
+  margin-left: 5px;
+  @media screen and (max-width: $break) {
+    min-width: 58px;
+  }
 
   .ContactProfile {
     width: 100%;

@@ -21,8 +21,6 @@ export default function FriendsList({ friends }: FriendsListProps) {
     }
   }, [dispatch, friends]);
 
-  console.log('friends', friends);
-
   return (
     <div className={styles.Contacts}>
       {friends.length > 0 ? (

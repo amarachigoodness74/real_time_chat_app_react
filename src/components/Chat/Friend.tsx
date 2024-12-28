@@ -35,7 +35,7 @@ export default function Friend({ friend }: FriendProps) {
       <span className={styles.ContactStatus}></span>
       <img src={friend.photoURL} alt="" />
       <div className={styles.Meta}>
-        <p className={styles.Name}>{friend.displayName}</p>
+        <h6 className={styles.Name}>{friend.displayName}</h6>
         {friend.lastChat && <p className={styles.Preview}>{friend.lastChat}</p>}
       </div>
     </div>

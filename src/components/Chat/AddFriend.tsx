@@ -14,7 +14,7 @@ export default function AddFriend() {
         className={styles.OpenModalBtn}
       >
         <i className="fa fa-user-plus fa-fw" aria-hidden="true"></i>{" "}
-        <span>Add contact</span>
+        <span className="font-bold">Add contact</span>
       </button>
       {modalOpen && <AddFriendModal setModalOpen={setModalOpen} />}
     </div>

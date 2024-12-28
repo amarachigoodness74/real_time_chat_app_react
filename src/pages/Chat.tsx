@@ -43,19 +43,19 @@ export default function Chat() {
         );
 
   return (
-    <section>
-      <div className={styles.Container}>
-        <div className={styles.SidePanel}>
-          <Profile />
-          {filteredUsers.length > 2 && <Search handleSearch={handleSearch} />}
-          <FriendsList friends={filteredUsers} />
-          <p className={styles.Spacer}></p>
-          <AddFriend />
-        </div>
+    <section className="chat-section">
+      <div className={styles.SidePanel}>
+        <Profile />
+        {filteredUsers.length > 2 && <Search handleSearch={handleSearch} />}
+        <FriendsList friends={filteredUsers} />
+        <p className="my-2"></p>
+        <AddFriend />
+      </div>
+      {filteredUsers.length > 0 && (
         <div className={styles.ChatContent}>
           <ChatContent />
         </div>
-      </div>
+      )}
     </section>
   );
 }

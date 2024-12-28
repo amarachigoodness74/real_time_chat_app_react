@@ -1,23 +1,17 @@
-@import url("https://fonts.googleapis.com/css?family=Playfair+Display:400,900|Poppins:400,500");
-@import "./variable";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  text-decoration: none;
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  padding: 0;
-  background: #cdd3d5;
-  font-family: "Poppins", sans-serif;
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display:400,900|Poppins:400,500");
+@import "./styles/variable";
+
+.chat-section {
   overflow-x: hidden;
   height: 100vh;
+  width: 100vw;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  background: #cdd3d5;
+  justify-content: space-between;
 }
 
 img {
@@ -35,15 +29,13 @@ p {
   line-height: 2;
 }
 
-// FormElement styles
 .error {
   font-weight: 300;
-  font-size: .6rem;
+  font-size: 0.6rem;
   margin-top: -10px;
   color: rgb(215, 215, 211);
 }
 
-// Chat styles
 #status-options.Active {
   opacity: 1;
   visibility: visible;
@@ -69,9 +61,3 @@ p {
     border: 2px solid $gray;
   }
 }
-
-// body {
-// 	text-rendering: optimizeLegibility;
-// 	text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
-// 	-webkit-font-smoothing: antialiased;
-// }

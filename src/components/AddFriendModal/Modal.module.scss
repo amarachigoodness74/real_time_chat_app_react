@@ -27,12 +27,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-  
+
     .Title {
       margin: 0 auto;
       color: $lighter;
+      font-weight: 600;
     }
-  
+
     .CloseBtn {
       background-color: transparent;
       width: 20px;
@@ -44,7 +45,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-  
+
       &:hover {
         background-color: crimson;
         color: #fff;
@@ -66,17 +67,17 @@
     @media screen and (max-width: $break) {
       display: none;
     }
-  
+
     label {
       margin: 0 10px;
       cursor: pointer;
-  
+
       i {
         border-left: 1px dotted rgb(193, 194, 195);
         padding: 10px;
       }
     }
-  
+
     input {
       font-family: "proxima-nova", "Source Sans Pro", sans-serif;
       padding: 7px 10px;
@@ -84,12 +85,12 @@
       border: none;
       background: $lighter;
       color: $white;
-  
+
       &:focus {
         outline: none;
         background: $light;
       }
-  
+
       &::-webkit-input-placeholder {
         color: $white;
       }
@@ -110,6 +111,8 @@
     align-items: center;
     font-size: 1.7rem;
     text-align: center;
+    width: 100%;
+    color: $dark;
 
     .Error {
       color: crimson;

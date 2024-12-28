@@ -107,6 +107,8 @@ export default function ChatContent() {
     currentUser?.uid && getChats();
   }, [currentUser, currentUser?.uid, state.user]);
 
+  console.log("chats", chats);
+
   return (
     <section>
       <>
@@ -126,13 +128,15 @@ export default function ChatContent() {
             </div>
           </div>
         )}
-        {friend && chats && chats.messages.length > 0 ? (
+        {friend && chats && chats.messages.length > 0 && (
           <div className={styles.Messages}>
             <ul>
               {currentUser &&
                 chats.messages.map((message: any) => (
                   <React.Fragment key={message.uid}>
-                    {/* {message.img && <img src={message.img} alt={message.text} />} */}
+                    {message.img && (
+                      <img src={message.img} alt={message.text} />
+                    )}
                     {message.img && (
                       <li
                         className={
@@ -171,8 +175,6 @@ export default function ChatContent() {
                 ))}
             </ul>
           </div>
-        ) : (
-          <div>Start new chat</div>
         )}
       </>
       <div className={styles.MessageInput}>
