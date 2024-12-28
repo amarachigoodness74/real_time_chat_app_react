@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {
-  browserLocalPersistence,
-  setPersistence,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../utils/firebase";
 import InlineLoader from "../components/loaders/InlineLoader";
@@ -48,7 +44,7 @@ const Signin: React.FC = () => {
         await updateDoc(doc(db, "users", user.uid), {
           status: UserStatus.online,
         });
-        window.localStorage.setItem('auth', JSON.stringify(user));
+        window.localStorage.setItem("auth", JSON.stringify(user));
         navigate("/chat");
       } else {
         setIsSubmitting(false);

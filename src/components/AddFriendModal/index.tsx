@@ -38,7 +38,6 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
         setUsers([...users, doc.data()]);
       });
     } catch (err) {
-      console.log("errrrrrrr", err);
       setError("User not found!!!");
     }
   };
@@ -85,7 +84,6 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
           setError("User is already friends with you");
         }
       } catch (err) {
-        console.log("err", err);
         setError("Something went wrong!!!");
       }
 

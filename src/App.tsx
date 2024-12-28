@@ -4,8 +4,7 @@ import PageLoader from "./components/loaders/PageLoader";
 import reloadOnFail from "./utils/reloadOnFail";
 import useCurrentUser from "./hooks/useCurrentUser";
 import { AuxProps } from "./@types/@types.children";
-import { browserLocalPersistence, setPersistence, User } from "firebase/auth";
-import { auth } from "./utils/firebase";
+import { User } from "firebase/auth";
 
 const SignupPage = lazy(() => reloadOnFail(() => import("./pages/Signup")));
 const SigninPage = lazy(() => reloadOnFail(() => import("./pages/Signin")));
@@ -21,8 +20,7 @@ function App() {
   const { currentUser, setCurrentUser } = useCurrentUser();
   const authUser = window.localStorage.getItem("auth");
 
-  const authUserObject = authUser ? JSON.parse(authUser) as User : null;
-  console.log('===============', authUserObject);
+  const authUserObject = authUser ? (JSON.parse(authUser) as User) : null;
 
   const ProtectedRoute = ({ children }: AuxProps) => {
     if (!currentUser) {
@@ -40,10 +38,8 @@ function App() {
       <Routes>
         <Route path="/" element={<SigninPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        {/* Todo */}
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        {/* End of Todo */}
         <Route
           path="/chat"
           element={

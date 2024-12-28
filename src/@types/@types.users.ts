@@ -12,7 +12,7 @@ export interface IUser {
 
 export type AuthContextType = {
   currentUser: User | null;
-  setCurrentUser: any
+  setCurrentUser: any;
 };
 
 export enum UserStatus {

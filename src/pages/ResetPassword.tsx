@@ -17,8 +17,7 @@ const ForgotPassword: React.FC = () => {
   });
 
   const handleSubmit = async (values: { password: string }) => {
-
-  const oobCode = new URLSearchParams(window.location.search).get("oobCode");
+    const oobCode = new URLSearchParams(window.location.search).get("oobCode");
     const { password } = values;
     if (oobCode)
       confirmPasswordReset(auth, oobCode, password)

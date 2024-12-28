@@ -47,7 +47,6 @@ export default function ChatContent() {
               }
             },
             (error: any) => {
-              console.error("error", error);
               setError("Could not upload file");
             },
             () => {

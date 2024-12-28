@@ -32,7 +32,7 @@ export default function FriendsList({ friends }: FriendsListProps) {
               onClick={() => {
                 dispatch({
                   type: ChatActionKind.CHANGE_FRIEND,
-                  payload:  { user: friend },
+                  payload: { user: friend },
                 });
               }}
             >

@@ -19,11 +19,9 @@ const AuthContextProvider = ({ children }: AuxProps) => {
       if (user) {
         setCurrentUser(user);
         setPersistence(auth, browserLocalPersistence)
-          .then(() => {
-            console.log("Persistence set to local.");
-          })
-          .catch((error) => {
-            console.error("Error setting persistence:", error.message);
+          .then(() => null)
+          .catch((_) => {
+            console.error("Error setting persistence:");
           });
       }
     });

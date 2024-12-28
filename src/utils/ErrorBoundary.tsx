@@ -1,9 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 export default class ErrorBoundary extends Component {
   render() {
-    return (
-      <div>ErrorBoundary</div>
-    )
+    return <div>ErrorBoundary</div>;
   }
 }

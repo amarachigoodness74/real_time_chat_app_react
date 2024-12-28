@@ -5,7 +5,7 @@ const chatReducer = (state: ChatContextType, action: any) => {
     case "CHANGE_FRIEND":
       return {
         ...state,
-        user: action.payload.user
+        user: action.payload.user,
       };
 
     default:

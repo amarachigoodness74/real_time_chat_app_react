@@ -9,11 +9,11 @@ type ActionMap<M extends { [index: string]: any }> = {
     : {
         type: Key;
         payload: M[Key];
-      }
+      };
 };
 
 export enum ChatActionKind {
-  CHANGE_FRIEND = 'CHANGE_FRIEND'
+  CHANGE_FRIEND = "CHANGE_FRIEND",
 }
 
 export type ChatContextType = {
@@ -21,9 +21,9 @@ export type ChatContextType = {
 };
 
 type ChatPayload = {
-  [ChatActionKind.CHANGE_FRIEND] : {
+  [ChatActionKind.CHANGE_FRIEND]: {
     user: IUser | null;
   };
-}
+};
 
 export type ChatActions = ActionMap<ChatPayload>[keyof ActionMap<ChatPayload>];

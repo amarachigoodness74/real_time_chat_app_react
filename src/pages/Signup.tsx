@@ -77,7 +77,6 @@ const Signup: React.FC = () => {
             setUploadState("Upload is " + progress + "% done");
           },
           (error: any) => {
-            console.error("error", error);
             setIsSubmitting(false);
           },
           () => {

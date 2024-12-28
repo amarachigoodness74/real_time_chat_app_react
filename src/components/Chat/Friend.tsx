@@ -14,12 +14,9 @@ export default function Friend({ friend }: FriendProps) {
   useEffect(() => {
     const getUserData = () => {
       if (friend) {
-        const getData = onSnapshot(
-          doc(db, "users", friend.uid),
-          (doc: any) => {
-            setStatus(doc.data().status);
-          }
-        );
+        const getData = onSnapshot(doc(db, "users", friend.uid), (doc: any) => {
+          setStatus(doc.data().status);
+        });
         return () => {
           getData();
         };
