@@ -4,5 +4,6 @@ import { AuthContext } from "../context/AuthContext";
 export default function useCurrentUser() {
   const authContext = useContext(AuthContext);
   const currentUser = authContext?.currentUser;
-  return currentUser;
+  const setCurrentUser = authContext?.setCurrentUser;
+  return { currentUser, setCurrentUser };
 }

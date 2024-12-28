@@ -20,7 +20,7 @@ interface ModalProp {
 }
 
 export default function AddFriendModal({ setModalOpen }: ModalProp) {
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
   const [username, setUsername] = useState("");
   const [users, setUsers] = useState<DocumentData[] | []>([]);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
 
   const handleSelect = async (user: DocumentData) => {
     if (user && currentUser) {
-      if(user.uid === currentUser.uid) {
+      if (user.uid === currentUser.uid) {
         setError("Not allowed!!!");
         return;
       }
@@ -59,9 +59,7 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
         const current_userFriend = `${currentUser.uid}-${user.uid}`;
         const friendCurrent_user = `${user.uid}-${currentUser.uid}`;
         const res = await getDoc(doc(db, "chats", current_userFriend));
-        const res2 = await getDoc(
-          doc(db, "chats", friendCurrent_user)
-        );
+        const res2 = await getDoc(doc(db, "chats", friendCurrent_user));
 
         if (!res.exists() && !res2.exists()) {
           await setDoc(doc(db, "chats", current_userFriend), { messages: [] });
@@ -125,11 +123,13 @@ export default function AddFriendModal({ setModalOpen }: ModalProp) {
         </div>
         <div className={styles.Body}>
           {error && <span className={styles.Error}>{error}</span>}
-          {!error && users.length > 0 && users.map(user => (
-            <div onClick={() => handleSelect(user)}>
-              <Friend friend={user} />
-            </div>
-          ))}
+          {!error &&
+            users.length > 0 &&
+            users.map((user) => (
+              <div onClick={() => handleSelect(user)}>
+                <Friend friend={user} />
+              </div>
+            ))}
         </div>
       </div>
     </div>

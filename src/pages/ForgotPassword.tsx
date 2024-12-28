@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../utils/firebase";
 import InlineLoader from "../components/loaders/InlineLoader";
 
 const ForgotPassword: React.FC = () => {
-  const navigate = useNavigate();
-
   const [error, setError] = useState<null | string>(null);
+  const [status, setStatus] = useState<null | string>(null);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -18,9 +19,13 @@ const ForgotPassword: React.FC = () => {
   const handleSubmit = async (values: { email: string }) => {
     const { email } = values;
 
-    setTimeout(() => {
-      alert(JSON.stringify(email, null, 2));
-    }, 400);
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setStatus("Check your email to reset your password.");
+      })
+      .catch((_) => {
+        setError("Error sending password reset email, try again!");
+      });
   };
 
   return (
@@ -67,6 +72,7 @@ const ForgotPassword: React.FC = () => {
                   <p className="text-red-500 text-sm">{error}</p>
                 </div>
               )}
+              {status && <p className="text-green-500 text-sm">{status}</p>}
               <div className="text-cyan-700 text-right pt-2">
                 <Link to="/">Sign in</Link>
               </div>

@@ -4,6 +4,8 @@ import PageLoader from "./components/loaders/PageLoader";
 import reloadOnFail from "./utils/reloadOnFail";
 import useCurrentUser from "./hooks/useCurrentUser";
 import { AuxProps } from "./@types/@types.children";
+import { browserLocalPersistence, setPersistence, User } from "firebase/auth";
+import { auth } from "./utils/firebase";
 
 const SignupPage = lazy(() => reloadOnFail(() => import("./pages/Signup")));
 const SigninPage = lazy(() => reloadOnFail(() => import("./pages/Signin")));
@@ -16,14 +18,18 @@ const ResetPasswordPage = lazy(() =>
 const ChatPage = lazy(() => reloadOnFail(() => import("./pages/Chat")));
 
 function App() {
-  const currentUser = useCurrentUser();
-//   firebase.auth().onAuthStateChanged((user) => {
-//     if (user) {
-//       console.log('user is logged');
-//     }
-// });
+  const { currentUser, setCurrentUser } = useCurrentUser();
+  const authUser = window.localStorage.getItem("auth");
+
+  const authUserObject = authUser ? JSON.parse(authUser) as User : null;
+  console.log('===============', authUserObject);
+
   const ProtectedRoute = ({ children }: AuxProps) => {
     if (!currentUser) {
+      if (authUserObject) {
+        setCurrentUser(authUserObject);
+        return <>{children}</>;
+      }
       return <Navigate to="/" />;
     }
     return <>{children}</>;

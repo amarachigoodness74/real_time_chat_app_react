@@ -11,7 +11,7 @@ import { IUser } from "../@types/@types.users";
 import styles from "../styles/Chat.module.scss";
 
 export default function Chat() {
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
   const [searchField, setSearchField] = useState("");
   const [friends, setFriends] = useState<IUser[] | []>([]);
 

@@ -14,70 +14,79 @@ import { ChatContext } from "../../context/ChatContext";
 import styles from "../../styles/Chat.module.scss";
 
 export default function ChatContent() {
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
   const { state } = useContext(ChatContext);
 
   const [chatId, setChatId] = useState<string | null>(null);
   const [chats, setChats] = useState<any>(null);
   const [newMessage, setNewMessage] = useState<string>("");
-  const [image, setImage] = useState<any>(null);
+  const [image, setImage] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [photoUploadState, setUploadState] = useState<null | string>(null);
 
   const friend = state.user;
 
   const handleSend = async () => {
-    if (currentUser && friend && chatId) {
+    if (currentUser && friend) {
       const date = new Date().getTime();
-      if (image) {
-        const storageRef = ref(storage, `${chatId}-${date}`);
-        const uploadTask = uploadBytesResumable(storageRef, image);
+      if (chatId) {
+        if (image) {
+          const storageRef = ref(storage, `${chatId}-${date}`);
+          const uploadTask = uploadBytesResumable(storageRef, image);
 
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress = (
-              (snapshot.bytesTransferred / snapshot.totalBytes) *
-              100
-            ).toFixed(0);
-            console.log("Upload is " + progress + "% done");
-          },
-          (error: any) => {
-            console.error("error", error);
-            setError("Could not upload file");
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(
-              async (downloadURL) => {
-                await updateDoc(doc(db, "chats", chatId), {
-                  messages: arrayUnion({
-                    text: newMessage,
-                    senderId: currentUser.uid,
-                    date: Timestamp.now(),
-                    img: downloadURL,
-                  }),
-                });
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = (
+                (snapshot.bytesTransferred / snapshot.totalBytes) *
+                100
+              ).toFixed(0);
+              setUploadState("Upload is " + progress + "% done");
+              if (Number(progress) === 100) {
+                setUploadState(null);
               }
-            );
-          }
-        );
-      } else {
-        await updateDoc(doc(db, "chats", chatId), {
-          messages: arrayUnion({
-            text: newMessage,
-            senderId: currentUser.uid,
-            date: Timestamp.now(),
-          }),
-        });
+            },
+            (error: any) => {
+              console.error("error", error);
+              setError("Could not upload file");
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then(
+                async (downloadURL) => {
+                  await updateDoc(doc(db, "chats", chatId), {
+                    messages: arrayUnion({
+                      text: newMessage,
+                      senderId: currentUser.uid,
+                      date: Timestamp.now(),
+                      img: downloadURL,
+                    }),
+                  });
+                }
+              );
+            }
+          );
+        } else {
+          await updateDoc(doc(db, "chats", chatId), {
+            messages: arrayUnion({
+              text: newMessage,
+              senderId: currentUser.uid,
+              date: Timestamp.now(),
+            }),
+          });
+        }
       }
 
+      const current_userFriend = `${currentUser.uid}-${friend.uid}`;
+      const friendCurrent_user = `${friend.uid}-${currentUser.uid}`;
+
       await updateDoc(doc(db, "friends", currentUser.uid), {
-        [chatId + ".lastChat"]: newMessage,
-        [chatId + ".date"]: serverTimestamp(),
+        [current_userFriend + ".lastChat"]: newMessage,
+        [current_userFriend + ".date"]: serverTimestamp(),
       });
 
       await updateDoc(doc(db, "friends", friend.uid), {
-        [chatId + ".lastChat"]: newMessage,
-        [chatId + ".date"]: serverTimestamp(),
+        [friendCurrent_user + ".lastChat"]: newMessage,
+        [friendCurrent_user + ".date"]: serverTimestamp(),
       });
 
       setNewMessage("");
@@ -93,7 +102,7 @@ export default function ChatContent() {
         const current_userFriend = `${currentUser.uid}-${friend.uid}`;
         const friendCurrent_user = `${friend.uid}-${currentUser.uid}`;
         const res = await getDoc(doc(db, "chats", current_userFriend));
-        if (res) {
+        if (res.data()) {
           setChats(res.data());
           setChatId(current_userFriend);
         } else {
@@ -106,8 +115,6 @@ export default function ChatContent() {
 
     currentUser?.uid && getChats();
   }, [currentUser, currentUser?.uid, state.user]);
-
-  console.log("chats", chats);
 
   return (
     <section>
@@ -135,9 +142,6 @@ export default function ChatContent() {
                 chats.messages.map((message: any) => (
                   <React.Fragment key={message.uid}>
                     {message.img && (
-                      <img src={message.img} alt={message.text} />
-                    )}
-                    {message.img && (
                       <li
                         className={
                           message.senderId === currentUser.uid
@@ -145,9 +149,13 @@ export default function ChatContent() {
                             : styles.Replies
                         }
                       >
-                        <a href={message.img} download>
-                          Download File
-                        </a>
+                        <img
+                          src={message.img}
+                          alt={message.text}
+                          width="80px"
+                          height={"80px"}
+                          className={styles.uploads}
+                        />
                       </li>
                     )}
                     <li
@@ -179,9 +187,15 @@ export default function ChatContent() {
       </>
       <div className={styles.MessageInput}>
         {error && <p className={styles.Error}>{error}</p>}
+        {photoUploadState && (
+          <p className="text-green-500 text-sm">{photoUploadState}</p>
+        )}
         {image && (
           <div className={styles.messageImage}>
-            <img src={image} alt="New message attachment" />
+            <img
+              src={URL.createObjectURL(image)}
+              alt="New message attachment"
+            />
             <span onClick={() => setImage(null)}>x</span>
           </div>
         )}
@@ -197,10 +211,11 @@ export default function ChatContent() {
               id="attachment"
               name="attachment"
               type="file"
+              accept="image/*"
               hidden
               onChange={(e: any) => {
                 if (e.target.files && e.target.files[0]) {
-                  setImage(URL.createObjectURL(e.target.files[0]));
+                  setImage(e.currentTarget.files?.[0] || null);
                 } else {
                   setError("Please upload a valid file");
                 }

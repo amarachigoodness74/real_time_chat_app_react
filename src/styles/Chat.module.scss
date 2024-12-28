@@ -578,6 +578,7 @@
   }
 
   .Messages {
+    margin-top: 5px;
     height: auto;
     min-height: calc(100% - 93px);
     max-height: calc(100% - 93px);
@@ -620,7 +621,8 @@
           }
 
           p {
-            background: $white;
+            background: $light;
+            color: $white;
             float: right;
           }
         }
@@ -631,8 +633,7 @@
           }
 
           p {
-            background: $light;
-            color: $white;
+            background: $white;
           }
         }
 
@@ -640,6 +641,12 @@
           width: 22px;
           border-radius: 50%;
           float: left;
+        }
+
+        img.uploads {
+          border-radius: 0;
+          width: 100px;
+          margin: 0;
         }
 
         p {

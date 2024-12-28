@@ -6,7 +6,7 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import styles from "../../styles/Chat.module.scss";
 
 function Profile() {
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
 
   const handleStatusDropdown = () => {
     let statusOptions: HTMLElement | null =

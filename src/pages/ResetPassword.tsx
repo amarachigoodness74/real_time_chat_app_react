@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { confirmPasswordReset } from "firebase/auth";
+import { auth } from "../utils/firebase";
 import InlineLoader from "../components/loaders/InlineLoader";
 
 const ForgotPassword: React.FC = () => {
   const [error, setError] = useState<null | string>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [status, setStatus] = useState<null | string>(null);
 
   const validationSchema = Yup.object({
     password: Yup.string()
@@ -14,11 +17,19 @@ const ForgotPassword: React.FC = () => {
   });
 
   const handleSubmit = async (values: { password: string }) => {
-    const { password } = values;
 
-    setTimeout(() => {
-      alert(JSON.stringify(password, null, 2));
-    }, 400);
+  const oobCode = new URLSearchParams(window.location.search).get("oobCode");
+    const { password } = values;
+    if (oobCode)
+      confirmPasswordReset(auth, oobCode, password)
+        .then(() => {
+          setStatus(
+            "Your password has been reset. You will be redirected to log in in 3 seconds"
+          );
+        })
+        .catch((_) => {
+          setError("Error sending password reset email, try again!");
+        });
   };
 
   return (
@@ -74,6 +85,7 @@ const ForgotPassword: React.FC = () => {
                   <p className="text-red-500 text-sm">{error}</p>
                 </div>
               )}
+              {status && <p className="text-green-500 text-sm">{status}</p>}
             </Form>
           )}
         </Formik>
