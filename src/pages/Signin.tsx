@@ -5,8 +5,8 @@ import * as Yup from "yup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../utils/firebase";
-import { SigninFormValues, UserStatus } from "../@types/@types.users";
 import InlineLoader from "../components/loaders/InlineLoader";
+import { SigninFormValues, UserStatus } from "../@types/@types.users";
 
 const Signin: React.FC = () => {
   const navigate = useNavigate();

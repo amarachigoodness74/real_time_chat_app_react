@@ -1,8 +1,9 @@
-import React from 'react';
-import styles from "./Loader.module.scss";
+import React from "react";
 
 export default function PageLoader() {
   return (
-    <span className={styles.PageLoaderCircle}></span>
-  )
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="animate-spin rounded-full h-20 w-20 border-t-8 border-cyan-700 border-solid"></div>
+    </div>
+  );
 }

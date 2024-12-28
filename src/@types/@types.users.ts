@@ -1,13 +1,6 @@
 // @types.users.ts
 import { User } from "firebase/auth";
 
-export interface IAuthData {
-  displayName?: string;
-  email: string;
-  password: string;
-  photoURL?: any;
-}
-
 export interface IUser {
   uid: string;
   email?: string;
@@ -27,6 +20,7 @@ export enum UserStatus {
   busy = "Busy",
   offline = "Offline",
 }
+
 export interface SignupFormValues {
   username: string;
   email: string;

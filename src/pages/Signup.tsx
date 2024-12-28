@@ -6,8 +6,8 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, storage, db } from "../utils/firebase";
-import { SignupFormValues, UserStatus } from "../@types/@types.users";
 import InlineLoader from "../components/loaders/InlineLoader";
+import { SignupFormValues, UserStatus } from "../@types/@types.users";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
