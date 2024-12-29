@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../utils/firebase";
@@ -6,6 +7,7 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import styles from "../../styles/Chat.module.scss";
 
 function Profile() {
+  const navigate = useNavigate();
   const { currentUser } = useCurrentUser();
 
   const handleStatusDropdown = () => {
@@ -33,6 +35,7 @@ function Profile() {
       });
     }
     await signOut(auth);
+    navigate('/')
   };
 
   return (

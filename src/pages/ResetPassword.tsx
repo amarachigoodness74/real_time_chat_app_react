@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { confirmPasswordReset } from "firebase/auth";
@@ -6,6 +7,7 @@ import { auth } from "../utils/firebase";
 import InlineLoader from "../components/loaders/InlineLoader";
 
 const ForgotPassword: React.FC = () => {
+  const navigate = useNavigate();
   const [error, setError] = useState<null | string>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<null | string>(null);
@@ -19,16 +21,22 @@ const ForgotPassword: React.FC = () => {
   const handleSubmit = async (values: { password: string }) => {
     const oobCode = new URLSearchParams(window.location.search).get("oobCode");
     const { password } = values;
-    if (oobCode)
+    if (oobCode) {
       confirmPasswordReset(auth, oobCode, password)
         .then(() => {
           setStatus(
             "Your password has been reset. You will be redirected to log in in 3 seconds"
           );
+          setTimeout(() => {
+            navigate("/");
+          }, 3000);
         })
         .catch((_) => {
           setError("Error sending password reset email, try again!");
         });
+    } else {
+      setError("Invalid link!");
+    }
   };
 
   return (
