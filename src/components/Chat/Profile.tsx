@@ -27,6 +27,7 @@ function Profile() {
 
   const handleSignOut = async () => {
     if (currentUser) {
+      window.localStorage.removeItem("auth");
       await updateDoc(doc(db, "users", currentUser.uid), {
         status: "Offline",
       });
