@@ -5,11 +5,15 @@ A feature-rich real-time chat application built with **React.js**, **TailwindCSS
 ## Features  
 
 - **User Authentication**  
-  - Login, Signup, Forgot Password, and Reset Password functionality.  
+  - Login, Signup, Forgot Password, and Reset Password functionality.
+  ![screencapture-real-time-chat-app-react-vercel-app-2025-01-05-20_11_03](https://github.com/user-attachments/assets/a44980a5-5186-47d4-90f7-2d1966627639)
+      
 
 - **Real-Time Messaging**  
   - Send and receive messages instantly.  
-  - Attach and share files or images in conversations.  
+  - Attach and share files or images in conversations.
+  ![screencapture-real-time-chat-app-react-vercel-app-chat-2025-01-05-20_12_11](https://github.com/user-attachments/assets/a7d5ea51-95d5-49d8-b69f-7fefbca92134)
+
 
 - **Friends Management**  
   - Add and manage friends to build your personal chat network.  
